@@ -30,7 +30,9 @@ export function initScene() {
     renderer.toneMapping = THREE.NoToneMapping;
     renderer.toneMappingExposure = 1.0;
     
-    document.body.appendChild(renderer.domElement);
+    // Append to canvas container (or body as fallback)
+    const container = document.getElementById('canvas-container') || document.body;
+    container.appendChild(renderer.domElement);
 
     console.log('✓ Scene initialized');
     

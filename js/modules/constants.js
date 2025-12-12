@@ -4,7 +4,7 @@
 
 export const CONFIG = {
     // Earth properties
-    EARTH_RADIUS: 2.0,
+    EARTH_RADIUS: 1.0,  // Globe radius in Three.js units
     EARTH_RADIUS_KM: 6371.0,
     
     // Interaction

@@ -2,7 +2,7 @@
 // SATELLITE DATA MANAGEMENT
 // ============================================
 
-import { CONFIG, URLS } from './constants.js';
+import { CONFIG, URLS, COLORS } from './constants.js';
 
 let satellites = [];
 let satelliteRecords = [];
@@ -180,13 +180,11 @@ export function getOrbitType(altitude) {
  * Get orbit color based on type
  */
 export function getOrbitColor(orbitType) {
-    const { SATELLITE_LEO, SATELLITE_MEO, SATELLITE_GEO } = require('./constants.js').COLORS;
-    
     switch (orbitType) {
-        case 'LEO': return SATELLITE_LEO;
-        case 'MEO': return SATELLITE_MEO;
-        case 'GEO': return SATELLITE_GEO;
-        default: return SATELLITE_LEO;
+        case 'LEO': return COLORS.SATELLITE_LEO;
+        case 'MEO': return COLORS.SATELLITE_MEO;
+        case 'GEO': return COLORS.SATELLITE_GEO;
+        default: return COLORS.SATELLITE_LEO;
     }
 }
 

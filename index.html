@@ -246,25 +246,24 @@
     <!-- satellite.js Library for SGP4 propagation -->
     <script src="https://cdn.jsdelivr.net/npm/satellite.js@6.0.1/dist/satellite.min.js"></script>
     
-    <!-- Expose satellite.js globally -->
-    <script>
-        // Wait for satellite.js to load
-        if (typeof satellite !== 'undefined') {
-            window.satellite = satellite;
-            console.log('✓ satellite.js loaded and exposed globally');
-        } else {
-            console.error('satellite.js failed to load');
-        }
-    </script>
-    
-    <!-- Load Three.js and OrbitControls globally -->
+    <!-- Load Three.js and OrbitControls globally (before other scripts) -->
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         
         // Expose THREE and OrbitControls globally
         window.THREE = THREE;
-        window.THREE.OrbitControls = OrbitControls;
+        window.OrbitControls = OrbitControls;
+        
+        // Also expose satellite.js when it loads
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof satellite !== 'undefined') {
+                window.satellite = satellite;
+                console.log('✓ satellite.js loaded and exposed globally');
+            } else {
+                console.error('satellite.js failed to load');
+            }
+        });
         
         console.log('✓ THREE.js and OrbitControls loaded globally');
     </script>

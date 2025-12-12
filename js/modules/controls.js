@@ -11,13 +11,17 @@ export function setupControls(camera, renderer) {
     return new Promise((resolve) => {
         // Delay to ensure OrbitControls is loaded
         setTimeout(() => {
-            if (typeof THREE.OrbitControls === 'undefined') {
+            // Check for OrbitControls in multiple possible locations
+            const OrbitControlsClass = window.OrbitControls || 
+                                       (window.THREE && window.THREE.OrbitControls);
+            
+            if (!OrbitControlsClass) {
                 console.error('OrbitControls not found. Camera controls disabled.');
                 resolve(null);
                 return;
             }
 
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls = new OrbitControlsClass(camera, renderer.domElement);
             
             // Configure controls
             controls.enableDamping = true;

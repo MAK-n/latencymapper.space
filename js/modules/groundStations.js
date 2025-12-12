@@ -18,13 +18,18 @@ export async function loadGroundStations() {
         
         const data = await response.json();
         
-        // Validate data
-        if (!Array.isArray(data)) {
-            throw new Error('Ground stations data is not an array');
+        // Handle both array format and object with 'stations' property
+        let stationsArray;
+        if (Array.isArray(data)) {
+            stationsArray = data;
+        } else if (data.stations && Array.isArray(data.stations)) {
+            stationsArray = data.stations;
+        } else {
+            throw new Error('Ground stations data is not in expected format');
         }
         
         // Validate each station has required fields
-        groundStations = data.filter(station => {
+        groundStations = stationsArray.filter(station => {
             const isValid = station.id && station.name && 
                            typeof station.lat === 'number' && 
                            typeof station.lon === 'number';
