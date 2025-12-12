@@ -1,7 +1,7 @@
 // ============================================
 // MAIN APPLICATION ENTRY POINT
 // ============================================
-
+import * as THREE from 'three';
 import { initScene, setupLighting, onWindowResize, getSceneObjects } from './modules/scene.js';
 import { createEarth } from './modules/earth.js';
 import { setupControls, updateControls } from './modules/controls.js';

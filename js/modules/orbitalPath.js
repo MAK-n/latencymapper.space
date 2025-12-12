@@ -2,7 +2,7 @@
 // ============================================
 // ORBITAL PATH CALCULATION AND RENDERING
 // ============================================
-import * as THREE from 'three';
+
 import * as THREE from 'three';
 import { CONFIG, COLORS } from './constants.js';
 import { satellitePositionToVector3 } from './coordinates.js';
