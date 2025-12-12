@@ -1,3 +1,70 @@
+// Listen for globe click mode activation from the UI/modal
+if (typeof window !== 'undefined') {
+    window.addEventListener('activate-globe-click-mode', () => {
+        // You must provide references to your globe, camera, and renderer here
+        // Example: activateGlobeClickMode(globe, camera, renderer);
+        if (window.__globe && window.__camera && window.__renderer) {
+            activateGlobeClickMode(window.__globe, window.__camera, window.__renderer);
+            console.log('[GroundStation] Globe click mode started');
+        } else {
+            console.warn('[GroundStation] Globe, camera, or renderer not found on window');
+        }
+    });
+}
+import { toLatLon } from './coordinates.js';
+
+// Activate globe click mode for selecting a ground station location
+export function activateGlobeClickMode(globe, camera, renderer) {
+    // Show tooltip or message
+    const tooltip = document.createElement('div');
+    tooltip.id = 'globe-click-tooltip';
+    tooltip.textContent = 'Click on the globe to select a location.';
+    tooltip.style.position = 'fixed';
+    tooltip.style.top = '20px';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translateX(-50%)';
+    tooltip.style.background = 'rgba(0,0,0,0.8)';
+    tooltip.style.color = '#fff';
+    tooltip.style.padding = '8px 16px';
+    tooltip.style.borderRadius = '8px';
+    tooltip.style.zIndex = 10000;
+    document.body.appendChild(tooltip);
+
+    function onGlobeClick(event) {
+        // Only handle left click
+        if (event.button !== 0) return;
+        // Convert screen to normalized device coordinates
+        const rect = renderer.domElement.getBoundingClientRect();
+        const mouse = {
+            x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
+            y: -((event.clientY - rect.top) / rect.height) * 2 + 1
+        };
+        // Raycast to globe
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObject(globe, true);
+        if (intersects.length > 0) {
+            const point = intersects[0].point;
+            // Convert 3D point to lat/lon
+            const { lat, lon } = toLatLon(point);
+            // Dispatch event with lat/lon
+            window.dispatchEvent(new CustomEvent('station-location-selected', { detail: { lat, lon } }));
+            cleanup();
+        }
+    }
+    function onEsc(event) {
+        if (event.key === 'Escape') {
+            cleanup();
+        }
+    }
+    function cleanup() {
+        renderer.domElement.removeEventListener('click', onGlobeClick);
+        window.removeEventListener('keydown', onEsc);
+        if (tooltip.parentNode) tooltip.parentNode.removeChild(tooltip);
+    }
+    renderer.domElement.addEventListener('click', onGlobeClick);
+    window.addEventListener('keydown', onEsc);
+}
 // ============================================
 // GROUND STATION INTERACTION (Rewritten Option C)
 // ============================================

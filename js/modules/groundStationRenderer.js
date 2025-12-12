@@ -27,24 +27,39 @@ function createStationMaterial() {
     });
 }
 
+function createNewStationMaterial() {
+    return new THREE.MeshStandardMaterial({
+        color: 0x00ff00, // bright green for new station
+        emissive: 0x00ff00,
+        emissiveIntensity: 0.9,
+        metalness: 0.5,
+        roughness: 0.4
+    });
+}
+
 /**
  * Render ground stations on the globe
  */
 export function renderGroundStations(scene, groundStations) {
     const geometry = createStationGeometry();
-    
+
     let renderedCount = 0;
-    
+
     groundStations.forEach(station => {
-        // Create independent material for each station
-        const material = createStationMaterial();
-        
+        // Distinct color for new stations (id pattern: 'gs_' + timestamp)
+        let material;
+        if (typeof station.id === 'string' && /^gs_\d{13,}$/.test(station.id)) {
+            material = createNewStationMaterial();
+        } else {
+            material = createStationMaterial();
+        }
+
         const mesh = new THREE.Mesh(geometry, material);
-        
+
         // Position on globe
         const position = latLonToVector3(station.lat, station.lon);
         mesh.position.copy(position);
-        
+
         // Store station data
         mesh.userData = {
             stationId: station.id,
@@ -54,12 +69,12 @@ export function renderGroundStations(scene, groundStations) {
             elevation: station.elevation || 0,
             type: station.type || 'Unknown'
         };
-        
+
         scene.add(mesh);
         stationMeshes.push(mesh);
         renderedCount++;
     });
-    
+
     console.log(`✓ Rendered ${renderedCount} ground stations on globe`);
     return stationMeshes;
 }

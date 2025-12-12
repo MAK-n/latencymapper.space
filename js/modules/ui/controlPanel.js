@@ -263,6 +263,18 @@ export function initAllButtons() {
         'Create Virtual Ground Station'
     );
     registerButton('add-station', 'left', btnAddStation);
+
+    // Attach Virtual Ground Station modal to Add Station button
+    import('./virtualGroundStation.js').then(mod => {
+        if (mod && typeof mod.initAddStationModal === 'function') {
+            mod.initAddStationModal();
+            btnAddStation.addEventListener('click', () => {
+                if (typeof mod.showAddStationModal === 'function') {
+                    mod.showAddStationModal();
+                }
+            });
+        }
+    });
     
     // 2. Add Custom Satellite Button
     const btnAddSatellite = createControlButton(

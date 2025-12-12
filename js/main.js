@@ -6,7 +6,7 @@ import { initScene, setupLighting, onWindowResize, getSceneObjects } from './mod
 import { createEarth } from './modules/earth.js';
 import { setupControls, updateControls } from './modules/controls.js';
 import { loadGroundStations } from './modules/groundStations.js';
-import { renderGroundStations, getStationMeshes } from './modules/groundStationRenderer.js';
+import { renderGroundStations, getStationMeshes, clearStationMeshes } from './modules/groundStationRenderer.js';
 import { setupStationInteraction, setupInfoPanelHandlers } from './modules/groundStationInteraction.js';
 import { 
     loadSatelliteData, 
@@ -159,6 +159,26 @@ async function init() {
     console.log('✓ Initialization complete');
 }
 
+// Listen for globe click mode activation and call the handler with correct references
+import { activateGlobeClickMode } from './modules/groundStationInteraction.js';
+
+window.addEventListener('activate-globe-click-mode', () => {
+    // Use the locally scoped scene, camera, renderer from init()
+    if (typeof camera !== 'undefined' && typeof renderer !== 'undefined') {
+        // Find the globe mesh (Earth) from the scene
+        let globe = null;
+        if (scene && scene.children) {
+            globe = scene.children.find(obj => obj.name === 'Earth' || obj.userData.isEarth);
+        }
+        if (globe && camera && renderer) {
+            activateGlobeClickMode(globe, camera, renderer);
+            console.log('[Main] Globe click mode activated');
+        } else {
+            console.warn('[Main] Globe, camera, or renderer not found');
+        }
+    }
+});
+
 /**
  * Animation loop
  */
@@ -194,4 +214,20 @@ try {
 } catch (error) {
     console.error('Error during initialization:', error);
 }
+
+// Listen for new ground station additions and update the globe
+window.addEventListener('add-ground-station', async (e) => {
+    const newStation = e.detail;
+    // Add to ground-stations.json via backend or local update (for demo, update in-memory and re-render)
+    // Here, we assume groundStations is managed in memory for the session
+    if (!window._groundStations) {
+        window._groundStations = await loadGroundStations();
+    }
+    window._groundStations.push(newStation);
+    // Remove old station meshes
+    clearStationMeshes(scene);
+    // Re-render all stations
+    renderGroundStations(scene, window._groundStations);
+    console.log('[Main] Added and rendered new ground station:', newStation);
+});
 

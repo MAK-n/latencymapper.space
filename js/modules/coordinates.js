@@ -1,3 +1,16 @@
+/**
+ * Convert 3D Vector3 point on the globe to latitude and longitude
+ * @param {THREE.Vector3|{x:number,y:number,z:number}} point - 3D point on globe
+ * @param {number} radius - Sphere radius (default: CONFIG.EARTH_RADIUS)
+ * @returns {{lat: number, lon: number}}
+ */
+export function toLatLon(point, radius = CONFIG.EARTH_RADIUS) {
+    // Accept either THREE.Vector3 or plain object
+    const x = point.x, y = point.y, z = point.z;
+    const lat = 90 - (Math.acos(y / radius) * 180 / Math.PI);
+    const lon = ((Math.atan2(z, x) * 180 / Math.PI) - 180);
+    return { lat, lon };
+}
 // ============================================
 // COORDINATE CONVERSION UTILITIES
 // ============================================
