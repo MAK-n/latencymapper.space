@@ -127,14 +127,14 @@ export function initAddStationModal() {
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Get form input elements directly from the form
+
+            // Query input elements each submit (ensures up-to-date references)
             const nameInput = form.querySelector('#station-name');
             const typeInput = form.querySelector('#station-type');
             const latInput = form.querySelector('#station-latitude');
             const lonInput = form.querySelector('#station-longitude');
             const elevationInput = form.querySelector('#station-elevation');
-            
+
             // Check if all inputs exist
             if (!nameInput || !typeInput || !latInput || !lonInput || !elevationInput) {
                 console.error('Form inputs not found:', {
@@ -147,12 +147,12 @@ export function initAddStationModal() {
                 alert('Error: Form inputs not properly initialized.');
                 return;
             }
-            
-            const name = document.getElementById('station-name')?.value || '';
-            const type = document.getElementById('station-type')?.value || '';
-            const latValue = document.getElementById('station-latitude')?.value || '';
-            const lonValue = document.getElementById('station-longitude')?.value || '';
-            const elevationValue = document.getElementById('station-elevation')?.value || '';
+
+            const name = nameInput.value;
+            const type = typeInput.value;
+            const latValue = latInput.value;
+            const lonValue = lonInput.value;
+            const elevationValue = elevationInput.value;
 
             if (!name || !type || latValue === '' || lonValue === '' || elevationValue === '') {
                 alert('Please fill all required fields (Name, Type, Latitude, Longitude, Elevation).');
@@ -176,9 +176,9 @@ export function initAddStationModal() {
                 elevation,
                 type
             };
-            
+
             console.log('Creating ground station:', newStation);
-            
+
             try {
                 window.dispatchEvent(new CustomEvent('add-ground-station', { detail: newStation }));
                 // Close modal
@@ -204,17 +204,14 @@ export function initAddStationModal() {
 
     // Cancel button in footer
     const cancelButton = document.getElementById('btn-cancel-station');
-    if (cancelButton) {
-        cancelButton.addEventListener('click', () => {
+    if (cancelButton && form) {
+        cancelButton.addEventListener('click', (e) => {
+            e.preventDefault();
             backdrop.classList.add('hidden');
             form.reset();
         });
     }
-    cancelButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    backdrop.classList.add('hidden');
-    form.reset();
-    });
+
 
     // Listen for globe location selection and populate form fields
     window.addEventListener('station-location-selected', (e) => {
@@ -286,7 +283,7 @@ export function showAddStationModal() {
 /**
  * Hide the modal
  */
-export function hideAddStationModal() {
+function hideAddStationModal() {
     if (modalElement) {
         modalElement.classList.add('hidden');
     }
@@ -295,6 +292,6 @@ export function hideAddStationModal() {
 /**
  * Get modal element
  */
-export function getAddStationModal() {
+function getAddStationModal() {
     return modalElement;
 }

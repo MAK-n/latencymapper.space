@@ -3,7 +3,6 @@
 // ============================================
 
 let controls;
-import * as THREE from 'three';
 /**
  * Setup OrbitControls for camera
  */

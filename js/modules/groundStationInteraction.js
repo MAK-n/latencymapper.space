@@ -70,7 +70,7 @@ export function activateGlobeClickMode(globe, camera, renderer) {
 // GROUND STATION INTERACTION (Rewritten Option C)
 // ============================================
 
-import { CONFIG, COLORS } from './constants.js';
+import { COLORS } from './constants.js';
 import { updateMousePosition } from './coordinates.js';
 
 let selectedStation = null;
