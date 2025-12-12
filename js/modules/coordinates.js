@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 /**
  * Convert 3D Vector3 point on the globe to latitude and longitude
  * @param {THREE.Vector3|{x:number,y:number,z:number}} point - 3D point on globe

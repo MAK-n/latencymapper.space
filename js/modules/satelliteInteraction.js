@@ -2,6 +2,7 @@
 // SATELLITE INTERACTION
 // ============================================
 
+import * as THREE from 'three';
 import { updateMousePosition } from './coordinates.js';
 import { showOrbitPath, removeOrbitLine } from './orbitalPath.js';
 

@@ -2,6 +2,7 @@
 // SATELLITE RENDERING
 // ============================================
 
+import * as THREE from 'three';
 import { COLORS } from './constants.js';
 import { satellitePositionToVector3 } from './coordinates.js';
 import { getOrbitType, getOrbitColor } from './satelliteData.js';

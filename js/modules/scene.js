@@ -3,6 +3,7 @@
 // ============================================
 
 import { COLORS } from './constants.js';
+import * as THREE from 'three';
 
 let scene, camera, renderer;
 

@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 // Listen for globe click mode activation from the UI/modal
 if (typeof window !== 'undefined') {
     window.addEventListener('activate-globe-click-mode', () => {
