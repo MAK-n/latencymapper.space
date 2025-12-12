@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Latency Map - 3D Globe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            background: #001122;
+        }
+        
+        /* Station Info Panel Styles */
+        .info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(10, 15, 30, 0.95);
+            border: 2px solid #4da6ff;
+            border-radius: 12px;
+            padding: 24px;
+            min-width: 280px;
+            max-width: 320px;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .info-panel.hidden {
+            display: none;
+        }
+        
+        .info-panel h3 {
+            margin: 0 0 16px 0;
+            color: #4da6ff;
+            font-size: 20px;
+            font-weight: 600;
+            padding-right: 30px;
+        }
+        
+        .info-row {
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(77, 166, 255, 0.2);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-row .label {
+            color: #8ab4d8;
+            font-weight: 500;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+        
+        .info-row .value {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: right;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #8ab4d8;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            line-height: 28px;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        
+        .close-btn:hover {
+            color: #ff4444;
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <!-- Station Info Panel (Task 1.2.7) -->
+    <div id="station-info" class="info-panel hidden">
+        <button id="close-info" class="close-btn">&times;</button>
+        <h3 id="station-name">Station Name</h3>
+        <div class="info-row">
+            <span class="label">Type:</span>
+            <span class="value" id="station-type">-</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Latitude:</span>
+            <span class="value" id="station-lat">-</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Longitude:</span>
+            <span class="value" id="station-lon">-</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Elevation:</span>
+            <span class="value" id="station-elevation">-</span>
+        </div>
+        <div class="info-row">
+            <span class="label">Station ID:</span>
+            <span class="value" id="station-id">-</span>
+        </div>
+    </div>
+    
+    <!-- Import map for ES modules -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <!-- Three.js Core Library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    
+    <!-- OrbitControls - Load as ES module and expose globally -->
+    <script type="module">
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        // Expose OrbitControls globally for non-module scripts
+        window.OrbitControls = OrbitControls;
+        // Also add to THREE namespace for compatibility
+        window.THREE = window.THREE || {};
+        window.THREE.OrbitControls = OrbitControls;
+        
+        // Signal that OrbitControls is loaded
+        window.dispatchEvent(new Event('orbitcontrols-loaded'));
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./textures/favicon.png">
+    
+    <!-- Main Application -->
+    <script src="js/globe.js"></script>
+</body>
+</html>
+

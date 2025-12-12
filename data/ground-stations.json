@@ -1,0 +1,164 @@
+{
+  "stations": [
+    {
+      "id": "gs_001",
+      "name": "San Francisco Station",
+      "lat": 37.7749,
+      "lon": -122.4194,
+      "elevation": 50,
+      "type": "amateur"
+    },
+    {
+      "id": "gs_002",
+      "name": "Tokyo Station",
+      "lat": 35.6762,
+      "lon": 139.6503,
+      "elevation": 40,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_003",
+      "name": "London Station",
+      "lat": 51.5074,
+      "lon": -0.1278,
+      "elevation": 35,
+      "type": "research"
+    },
+    {
+      "id": "gs_004",
+      "name": "Sydney Station",
+      "lat": -33.8688,
+      "lon": 151.2093,
+      "elevation": 45,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_005",
+      "name": "New York Station",
+      "lat": 40.7128,
+      "lon": -74.0060,
+      "elevation": 60,
+      "type": "research"
+    },
+    {
+      "id": "gs_006",
+      "name": "Mumbai Station",
+      "lat": 19.0760,
+      "lon": 72.8777,
+      "elevation": 30,
+      "type": "amateur"
+    },
+    {
+      "id": "gs_007",
+      "name": "São Paulo Station",
+      "lat": -23.5505,
+      "lon": -46.6333,
+      "elevation": 55,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_008",
+      "name": "Moscow Station",
+      "lat": 55.7558,
+      "lon": 37.6173,
+      "elevation": 38,
+      "type": "research"
+    },
+    {
+      "id": "gs_009",
+      "name": "Cairo Station",
+      "lat": 30.0444,
+      "lon": 31.2357,
+      "elevation": 42,
+      "type": "amateur"
+    },
+    {
+      "id": "gs_010",
+      "name": "Cape Town Station",
+      "lat": -33.9249,
+      "lon": 18.4241,
+      "elevation": 48,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_011",
+      "name": "Singapore Station",
+      "lat": 1.3521,
+      "lon": 103.8198,
+      "elevation": 25,
+      "type": "research"
+    },
+    {
+      "id": "gs_012",
+      "name": "Berlin Station",
+      "lat": 52.5200,
+      "lon": 13.4050,
+      "elevation": 52,
+      "type": "amateur"
+    },
+    {
+      "id": "gs_013",
+      "name": "Toronto Station",
+      "lat": 43.6532,
+      "lon": -79.3832,
+      "elevation": 58,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_014",
+      "name": "Beijing Station",
+      "lat": 39.9042,
+      "lon": 116.4074,
+      "elevation": 44,
+      "type": "research"
+    },
+    {
+      "id": "gs_015",
+      "name": "Reykjavik Station",
+      "lat": 64.1466,
+      "lon": -21.9426,
+      "elevation": 28,
+      "type": "amateur"
+    },
+    {
+      "id": "gs_016",
+      "name": "Buenos Aires Station",
+      "lat": -34.6037,
+      "lon": -58.3816,
+      "elevation": 36,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_017",
+      "name": "Bangkok Station",
+      "lat": 13.7563,
+      "lon": 100.5018,
+      "elevation": 32,
+      "type": "research"
+    },
+    {
+      "id": "gs_018",
+      "name": "Nairobi Station",
+      "lat": -1.2921,
+      "lon": 36.8219,
+      "elevation": 1661,
+      "type": "amateur"
+    },
+    {
+      "id": "gs_019",
+      "name": "Seoul Station",
+      "lat": 37.5665,
+      "lon": 126.9780,
+      "elevation": 46,
+      "type": "commercial"
+    },
+    {
+      "id": "gs_020",
+      "name": "Mexico City Station",
+      "lat": 19.4326,
+      "lon": -99.1332,
+      "elevation": 2240,
+      "type": "research"
+    }
+  ]
+}

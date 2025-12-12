@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "three": "^0.182.0"
+  },
+  "scripts": {
+    "start": "npx http-server -p 8000",
+    "dev": "npx http-server -p 8000 -o"
+  }
+}
