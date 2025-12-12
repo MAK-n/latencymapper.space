@@ -71,7 +71,5 @@ coverage/
 # *.min.js
 # *.min.css
 
-.gitignore
-TASK-1.2-GROUND-STATIONS.md
 *.md
 *.backup
