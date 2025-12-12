@@ -233,27 +233,43 @@
         </div>
     </div>
     
-    <!-- Three.js Core Library -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    
-    <!-- satellite.js Library - Load as ES module and expose globally -->
-    <script type="module">
-        import * as satellite from 'satellite.js';
-        window.satellite = satellite;
-        console.log('✓ satellite.js loaded and exposed globally');
-        window.dispatchEvent(new Event('satellitejs-loaded'));
+    <!-- Three.js Library -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
     </script>
     
-    <!-- OrbitControls - Load as ES module and expose globally -->
+    <!-- satellite.js Library for SGP4 propagation -->
+    <script src="https://cdn.jsdelivr.net/npm/satellite.js@6.0.1/dist/satellite.min.js"></script>
+    
+    <!-- Expose satellite.js globally -->
+    <script>
+        // Wait for satellite.js to load
+        if (typeof satellite !== 'undefined') {
+            window.satellite = satellite;
+            console.log('✓ satellite.js loaded and exposed globally');
+        } else {
+            console.error('satellite.js failed to load');
+        }
+    </script>
+    
+    <!-- Load Three.js and OrbitControls globally -->
     <script type="module">
+        import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        window.OrbitControls = OrbitControls;
-        window.THREE = window.THREE || {};
+        
+        // Expose THREE and OrbitControls globally
+        window.THREE = THREE;
         window.THREE.OrbitControls = OrbitControls;
-        window.dispatchEvent(new Event('orbitcontrols-loaded'));
+        
+        console.log('✓ THREE.js and OrbitControls loaded globally');
     </script>
     
-    <!-- Main Application -->
-    <script src="js/globe.js"></script>
+    <!-- Main Application Script (ES Module) -->
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

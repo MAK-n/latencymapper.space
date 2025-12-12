@@ -73,3 +73,5 @@ coverage/
 
 .gitignore
 TASK-1.2-GROUND-STATIONS.md
+*.md
+*.backup
