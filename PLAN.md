@@ -24,20 +24,23 @@
 - **Status:** Globe renders with interactive camera controls, texture displays correctly
 - **See:** `TASK-1.1-THREEJS-GLOBE-SETUP.md` for detailed implementation
 
-**1.2: Create satellite point rendering system (2 hours)**
+**1.2: Create satellite point rendering system (2 hours)** ⏳ NEXT
 - Render satellites as small spheres or billboarded sprites
 - Color-code by orbit type (LEO=blue, MEO=green, GEO=red)
 - Implement efficient instanced rendering for 50-100+ satellites
+- **See:** `TASK-1.3-SATELLITE-TRACKING.md` for detailed implementation plan
 
-**1.3: Implement real-time satellite animation (2 hours)**
+**1.3: Implement real-time satellite animation (2 hours)** ⏳ NEXT
 - Update satellite positions every frame based on propagated coordinates
 - Smooth interpolation between 60-second calculation steps
 - Add hover tooltips showing satellite name on mouseover
+- **See:** `TASK-1.3-SATELLITE-TRACKING.md` for detailed implementation plan
 
-**1.4: Build satellite selection system (1.5 hours)**
+**1.4: Build satellite selection system (1.5 hours)** ⏳ NEXT
 - Raycasting for click detection on satellite points
 - Highlight selected satellite (larger size, glow effect)
 - Display satellite info panel (name, altitude, velocity, orbit type)
+- **See:** `TASK-1.3-SATELLITE-TRACKING.md` for detailed implementation plan
 
 #### Backend Tasks (Backend Dev):
 
