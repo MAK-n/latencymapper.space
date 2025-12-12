@@ -6,6 +6,18 @@ let earthMesh;
 let groundStations = [];
 let stationMeshes = [];
 
+// Satellite variables (Task 1.3)
+let satellites = [];
+let satelliteMeshes = [];
+let satelliteRecords = [];
+
+// Real-time update variables (Task 1.3.6)
+let lastSatelliteUpdate = 0;
+const satelliteUpdateInterval = 2000; // Update every 2 seconds
+let satelliteTargetPositions = []; // Target positions for smooth interpolation
+let satelliteCurrentPositions = []; // Current interpolated positions
+const interpolationSpeed = 0.05; // Smooth interpolation factor
+
 // Raycaster for station interaction (Task 1.2.6)
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -17,11 +29,17 @@ let mouseDownPos = { x: 0, y: 0 };
 let mouseUpPos = { x: 0, y: 0 };
 const clickThreshold = 5; // pixels
 
+// Satellite interaction variables (Task 1.3.7)
+let hoveredSatellite = null;
+let selectedSatellite = null;
+let currentOrbitLine = null; // Currently displayed orbital path
+let orbitPathCache = new Map(); // Cache calculated orbital paths
+
 // Initialize the scene
 async function init() {
-    // Scene
+    // Scene - Space Operations Theme
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x001122);
+    scene.background = new THREE.Color(0x05070D); // Dark space background
     
     // Camera
     const fov = 50;
@@ -57,6 +75,30 @@ async function init() {
         setupStationInteraction();
         // Setup info panel handlers (Task 1.2.7)
         setupInfoPanelHandlers();
+    }
+    
+    // Load satellite data (Task 1.3.1 & 1.3.2)
+    console.log('Loading satellite data...');
+    const satelliteData = await loadSatelliteData();
+    if (satelliteData.length > 0) {
+        satellites = satelliteData;
+        console.log(`✓ Satellite data ready: ${satellites.length} satellites`);
+        
+        // Initialize satellites and propagate positions (Task 1.3.3)
+        await initializeSatellites();
+        
+        // Render satellites on globe (Task 1.3.4 & 1.3.5)
+        if (satelliteRecords.length > 0) {
+            renderSatellites();
+            
+            // Setup satellite interaction (Task 1.3.7.1)
+            setupSatelliteInteraction();
+            setupSatelliteInfoPanelHandlers();
+            
+            console.log('✓ Satellite interaction and orbital path system ready');
+        }
+    } else {
+        console.warn('No satellite data loaded');
     }
     
     // Resize handler
@@ -146,8 +188,8 @@ function createStationGeometry() {
 // Task 1.2.3: Create material for ground stations
 function createStationMaterial() {
     return new THREE.MeshStandardMaterial({
-        color: 0xff0000,        // Red color
-        emissive: 0xff0000,     // Self-illuminated (not affected by lighting)
+        color: 0xFFB039,        // Orange ground station color (Space Operations Theme)
+        emissive: 0xFFB039,     // Self-illuminated (not affected by lighting)
         emissiveIntensity: 0.8, // Bright enough to see clearly
         metalness: 0.0,         // Not metallic
         roughness: 1.0          // Fully rough (matte)
@@ -215,8 +257,8 @@ function renderGroundStations(stations) {
         // Create individual material for each station using MeshStandardMaterial
         // (MeshBasicMaterial doesn't support emissive properties)
         const material = new THREE.MeshStandardMaterial({
-            color: 0xff0000,
-            emissive: 0xff0000,
+            color: 0xFFB039,        // Orange ground station color (Space Operations Theme)
+            emissive: 0xFFB039,
             emissiveIntensity: 0.8,
             metalness: 0.0,
             roughness: 1.0
@@ -283,6 +325,16 @@ function onStationClick(event) {
     // Cast ray from camera through mouse position
     raycaster.setFromCamera(mouse, camera);
     
+    // Check satellites first (Task 1.3.7.1)
+    const satelliteIntersects = raycaster.intersectObjects(satelliteMeshes);
+    
+    if (satelliteIntersects.length > 0) {
+        // Satellite was clicked - handle it
+        console.log('Satellite clicked, handling...');
+        onSatelliteClick(event);
+        return;
+    }
+    
     // Check for intersections with station meshes
     const intersects = raycaster.intersectObjects(stationMeshes);
     
@@ -294,34 +346,34 @@ function onStationClick(event) {
         
         console.log('Station clicked:', stationData.stationName);
         
-        // Reset previous selection completely
-        if (selectedStation && selectedStation !== clickedMesh) {
-            console.log('Resetting previous selection');
-            selectedStation.material.color.setHex(0xff0000);
-            selectedStation.material.emissive.setHex(0xff0000);
-            selectedStation.material.emissiveIntensity = 0.8;
-            selectedStation.scale.set(1, 1, 1);
-        }
-        
-        // If clicking the same station, deselect it
-        if (selectedStation === clickedMesh) {
-            console.log('Deselecting current station');
-            selectedStation.material.color.setHex(0xff0000);
-            selectedStation.material.emissive.setHex(0xff0000);
-            selectedStation.material.emissiveIntensity = 0.8;
-            selectedStation.scale.set(1, 1, 1);
-            selectedStation = null;
-            
-            // Hide station info panel (Task 1.2.7)
-            hideStationInfo();
-        } else {
-            // Select the new station with soft blue color
-            console.log('Selecting new station');
-            selectedStation = clickedMesh;
-            selectedStation.material.color.setHex(0x4da6ff);
-            selectedStation.material.emissive.setHex(0x4da6ff);
-            selectedStation.material.emissiveIntensity = 1.0;
-            selectedStation.scale.set(1.5, 1.5, 1.5);
+               // Reset previous selection completely
+               if (selectedStation && selectedStation !== clickedMesh) {
+                   console.log('Resetting previous selection');
+                   selectedStation.material.color.setHex(0xFFB039);  // Orange
+                   selectedStation.material.emissive.setHex(0xFFB039);
+                   selectedStation.material.emissiveIntensity = 0.8;
+                   selectedStation.scale.set(1, 1, 1);
+               }
+               
+               // If clicking the same station, deselect it
+               if (selectedStation === clickedMesh) {
+                   console.log('Deselecting current station');
+                   selectedStation.material.color.setHex(0xFFB039);  // Orange
+                   selectedStation.material.emissive.setHex(0xFFB039);
+                   selectedStation.material.emissiveIntensity = 0.8;
+                   selectedStation.scale.set(1, 1, 1);
+                   selectedStation = null;
+                   
+                   // Hide station info panel (Task 1.2.7)
+                   hideStationInfo();
+               } else {
+                   // Select the new station with cyan selection color (theme)
+                   console.log('Selecting new station');
+                   selectedStation = clickedMesh;
+                   selectedStation.material.color.setHex(0x00E5FF);  // Cyan selection
+                   selectedStation.material.emissive.setHex(0x00E5FF);
+                   selectedStation.material.emissiveIntensity = 1.2;
+                   selectedStation.scale.set(1.5, 1.5, 1.5);
             
             console.log(`Selected: ${stationData.stationName} (${stationData.lat.toFixed(2)}°, ${stationData.lon.toFixed(2)}°)`);
             
@@ -329,21 +381,21 @@ function onStationClick(event) {
             console.log('Calling displayStationInfo...');
             displayStationInfo(stationData);
         }
-    } else {
-        // Clicked on empty space - deselect
-        console.log('Clicked empty space');
-        if (selectedStation) {
-            console.log('Deselecting station');
-            selectedStation.material.color.setHex(0xff0000);
-            selectedStation.material.emissive.setHex(0xff0000);
-            selectedStation.material.emissiveIntensity = 0.8;
-            selectedStation.scale.set(1, 1, 1);
-            selectedStation = null;
-            
-            // Hide station info panel (Task 1.2.7)
-            hideStationInfo();
-        }
-    }
+           } else {
+               // Clicked on empty space - deselect
+               console.log('Clicked empty space');
+               if (selectedStation) {
+                   console.log('Deselecting station');
+                   selectedStation.material.color.setHex(0xFFB039);  // Orange
+                   selectedStation.material.emissive.setHex(0xFFB039);
+                   selectedStation.material.emissiveIntensity = 0.8;
+                   selectedStation.scale.set(1, 1, 1);
+                   selectedStation = null;
+                   
+                   // Hide station info panel (Task 1.2.7)
+                   hideStationInfo();
+               }
+           }
 }
 
 // Task 1.2.6: Handle hover effect on ground stations
@@ -455,8 +507,8 @@ function setupInfoPanelHandlers() {
             
             // Also deselect the station
             if (selectedStation) {
-                selectedStation.material.color.setHex(0xff0000);
-                selectedStation.material.emissive.setHex(0xff0000);
+                selectedStation.material.color.setHex(0xFFB039);  // Orange (Space Operations Theme)
+                selectedStation.material.emissive.setHex(0xFFB039);
                 selectedStation.material.emissiveIntensity = 0.8;
                 selectedStation.scale.set(1, 1, 1);
                 selectedStation = null;
@@ -545,10 +597,749 @@ function onWindowResize() {
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
+    
+    // Update controls
     if (controls) {
         controls.update(); // Required if damping is enabled
     }
+    
+    // Update satellite positions in real-time (Task 1.3.6)
+    if (satelliteMeshes.length > 0) {
+        updateSatellitePositions();
+    }
+    
     renderer.render(scene, camera);
+}
+
+// ============================================
+// SATELLITE FUNCTIONS (TASK 1.3)
+// ============================================
+
+// Task 1.3.2: Fetch TLE data from CelesTrak
+async function fetchTLEData() {
+    const cacheKey = 'satellite_tle_cache';
+    const cacheTimeKey = 'satellite_tle_cache_time';
+    const cacheExpiry = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+    
+    // Check cache first
+    const cachedTime = localStorage.getItem(cacheTimeKey);
+    const cachedData = localStorage.getItem(cacheKey);
+    
+    if (cachedTime && cachedData) {
+        const age = Date.now() - parseInt(cachedTime);
+        if (age < cacheExpiry) {
+            console.log('✓ Using cached TLE data (age: ' + Math.round(age / 1000 / 60) + ' minutes)');
+            return JSON.parse(cachedData);
+        }
+    }
+    
+    // Fetch fresh data
+    console.log('Fetching TLE data from CelesTrak...');
+    try {
+        const url = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle';
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const text = await response.text();
+        const parsedSatellites = parseTLEText(text);
+        
+        // Cache the data
+        localStorage.setItem(cacheKey, JSON.stringify(parsedSatellites));
+        localStorage.setItem(cacheTimeKey, Date.now().toString());
+        
+        console.log(`✓ Fetched and cached ${parsedSatellites.length} satellites from CelesTrak`);
+        return parsedSatellites;
+        
+    } catch (error) {
+        console.error('Error fetching TLE data:', error);
+        
+        // Try to use cached data even if expired
+        if (cachedData) {
+            console.warn('Using expired cache due to fetch error');
+            return JSON.parse(cachedData);
+        }
+        
+        return [];
+    }
+}
+
+// Task 1.3.2: Parse TLE text format
+function parseTLEText(tleText) {
+    const lines = tleText.trim().split('\n');
+    const parsedSatellites = [];
+    
+    // TLE format: 3 lines per satellite (name, line1, line2)
+    for (let i = 0; i < lines.length; i += 3) {
+        if (i + 2 < lines.length) {
+            const name = lines[i].trim();
+            const line1 = lines[i + 1].trim();
+            const line2 = lines[i + 2].trim();
+            
+            // Basic validation
+            if (line1.startsWith('1 ') && line2.startsWith('2 ')) {
+                parsedSatellites.push({
+                    name: name,
+                    tleLine1: line1,
+                    tleLine2: line2
+                });
+            }
+        }
+    }
+    
+    console.log(`✓ Parsed ${parsedSatellites.length} satellites from TLE data`);
+    return parsedSatellites;
+}
+
+// Task 1.3.2: Load satellites (limit to first 50 for testing)
+async function loadSatelliteData() {
+    try {
+        const allSatellites = await fetchTLEData();
+        
+        // Limit to 50 satellites for initial testing
+        const limitedSatellites = allSatellites.slice(0, 50);
+        
+        console.log(`✓ Loaded ${limitedSatellites.length} satellites (limited from ${allSatellites.length} total)`);
+        return limitedSatellites;
+        
+    } catch (error) {
+        console.error('Error loading satellite data:', error);
+        return [];
+    }
+}
+
+// ============================================
+// SATELLITE ORBIT PROPAGATION (TASK 1.3.3)
+// ============================================
+
+// Task 1.3.3: Initialize satellite record from TLE
+function initializeSatelliteRecord(satData) {
+    if (!window.satellite) {
+        console.error('satellite.js not loaded yet');
+        return null;
+    }
+    
+    try {
+        const satrec = window.satellite.twoline2satrec(
+            satData.tleLine1,
+            satData.tleLine2
+        );
+        
+        if (satrec.error) {
+            console.error('TLE parsing error for', satData.name, ':', satrec.error);
+            return null;
+        }
+        
+        return {
+            name: satData.name,
+            satrec: satrec,
+            tleLine1: satData.tleLine1,
+            tleLine2: satData.tleLine2
+        };
+    } catch (error) {
+        console.error('Error initializing satellite record for', satData.name, ':', error);
+        return null;
+    }
+}
+
+// Task 1.3.3: Propagate satellite to get current position
+function propagateSatellitePosition(satRecord, date) {
+    if (!window.satellite || !satRecord || !satRecord.satrec) {
+        return null;
+    }
+    
+    try {
+        // Propagate satellite to given date/time
+        const positionAndVelocity = window.satellite.propagate(satRecord.satrec, date);
+        
+        if (!positionAndVelocity || !positionAndVelocity.position) {
+            console.warn('Propagation failed for', satRecord.name);
+            return null;
+        }
+        
+        const positionEci = positionAndVelocity.position;
+        const velocityEci = positionAndVelocity.velocity;
+        
+        // Check for invalid positions
+        if (typeof positionEci.x !== 'number' || isNaN(positionEci.x)) {
+            console.warn('Invalid position for', satRecord.name);
+            return null;
+        }
+        
+        // Convert ECI coordinates to Geodetic (lat, lon, alt)
+        const gmst = window.satellite.gstime(date);
+        const positionGd = window.satellite.eciToGeodetic(positionEci, gmst);
+        
+        // Convert to degrees
+        const latitude = window.satellite.degreesLat(positionGd.latitude);
+        const longitude = window.satellite.degreesLong(positionGd.longitude);
+        const altitude = positionGd.height; // km above Earth's surface
+        
+        // Calculate velocity magnitude (km/s)
+        const velocity = Math.sqrt(
+            velocityEci.x * velocityEci.x +
+            velocityEci.y * velocityEci.y +
+            velocityEci.z * velocityEci.z
+        );
+        
+        return {
+            latitude: latitude,
+            longitude: longitude,
+            altitude: altitude,
+            velocity: velocity,
+            timestamp: date
+        };
+        
+    } catch (error) {
+        console.error('Error propagating satellite', satRecord.name, ':', error);
+        return null;
+    }
+}
+
+// Task 1.3.3: Determine orbit type based on altitude
+function getOrbitType(altitude) {
+    if (altitude < 2000) return 'LEO';      // Low Earth Orbit
+    if (altitude < 35786) return 'MEO';     // Medium Earth Orbit
+    return 'GEO';                           // Geostationary Orbit
+}
+
+// Task 1.3.3: Get color for orbit type - Space Operations Theme
+function getOrbitColor(orbitType) {
+    switch (orbitType) {
+        case 'LEO': return 0x00E5FF;  // Cyan satellite color from theme
+        case 'MEO': return 0x37F0C6;  // Teal orbit line color from theme
+        case 'GEO': return 0x52E38F;  // Success green from theme
+        default: return 0xffffff;     // White
+    }
+}
+
+// Task 1.3.3: Initialize all satellites and propagate initial positions
+async function initializeSatellites() {
+    if (!window.satellite) {
+        console.error('satellite.js not loaded. Waiting...');
+        
+        // Wait for satellite.js to load
+        return new Promise((resolve) => {
+            window.addEventListener('satellitejs-loaded', () => {
+                console.log('satellite.js loaded, initializing satellites...');
+                resolve(initializeSatellitesInternal());
+            }, { once: true });
+        });
+    }
+    
+    return initializeSatellitesInternal();
+}
+
+async function initializeSatellitesInternal() {
+    if (satellites.length === 0) {
+        console.warn('No satellite data to initialize');
+        return;
+    }
+    
+    console.log('Initializing satellite records and propagating positions...');
+    const date = new Date();
+    let successCount = 0;
+    
+    for (const satData of satellites) {
+        // Initialize satellite record from TLE
+        const satRecord = initializeSatelliteRecord(satData);
+        if (!satRecord) {
+            continue;
+        }
+        
+        // Propagate to get current position
+        const position = propagateSatellitePosition(satRecord, date);
+        if (!position) {
+            continue;
+        }
+        
+        // Calculate orbit type
+        const orbitType = getOrbitType(position.altitude);
+        
+        // Store complete satellite record with position
+        satelliteRecords.push({
+            ...satRecord,
+            position: position,
+            orbitType: orbitType
+        });
+        
+        successCount++;
+    }
+    
+    console.log(`✓ Successfully initialized ${successCount} out of ${satellites.length} satellites`);
+    console.log('Satellite orbit types:', 
+        satelliteRecords.filter(s => s.orbitType === 'LEO').length + ' LEO, ',
+        satelliteRecords.filter(s => s.orbitType === 'MEO').length + ' MEO, ',
+        satelliteRecords.filter(s => s.orbitType === 'GEO').length + ' GEO'
+    );
+}
+
+// ============================================
+// SATELLITE RENDERING (TASK 1.3.4 & 1.3.5)
+// ============================================
+
+// Task 1.3.4: Create satellite geometry
+function createSatelliteGeometry() {
+    // Small sphere for satellite representation
+    const radius = 0.01; // Smaller than ground stations (0.015)
+    const segments = 8;  // Simple geometry for performance
+    return new THREE.SphereGeometry(radius, segments, segments);
+}
+
+// Task 1.3.4: Create satellite material based on orbit type
+function createSatelliteMaterial(orbitType) {
+    const color = getOrbitColor(orbitType);
+    
+    return new THREE.MeshStandardMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 0.9,
+        metalness: 0.0,
+        roughness: 1.0
+    });
+}
+
+// Task 1.3.5: Convert satellite geodetic position to 3D coordinates
+function satellitePositionToVector3(latitude, longitude, altitude) {
+    // Earth radius in km
+    const earthRadiusKm = 6371;
+    // Globe radius in Three.js units
+    const globeRadius = 1.0;
+    
+    // Convert altitude from km to Three.js units
+    // Scale altitude to match globe scale
+    const scaledAltitude = (altitude / earthRadiusKm) * globeRadius;
+    
+    // Use existing latLonToVector3 function with scaled altitude
+    return latLonToVector3(latitude, longitude, globeRadius, scaledAltitude);
+}
+
+// Task 1.3.5: Render all satellites on the globe
+function renderSatellites() {
+    if (satelliteRecords.length === 0) {
+        console.warn('No satellite records to render');
+        return;
+    }
+    
+    console.log('Rendering satellites on globe...');
+    
+    const geometry = createSatelliteGeometry();
+    let renderedCount = 0;
+    
+    satelliteRecords.forEach(satRecord => {
+        if (!satRecord.position) {
+            return;
+        }
+        
+        const { latitude, longitude, altitude } = satRecord.position;
+        
+        // Convert position to 3D coordinates
+        const position = satellitePositionToVector3(latitude, longitude, altitude);
+        
+        // Create individual material for each satellite (avoid sharing issues)
+        const material = createSatelliteMaterial(satRecord.orbitType);
+        
+        // Create mesh
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(position);
+        
+        // Store satellite data in mesh for interaction (future task)
+        mesh.userData = {
+            satelliteName: satRecord.name,
+            orbitType: satRecord.orbitType,
+            latitude: latitude,
+            longitude: longitude,
+            altitude: altitude,
+            velocity: satRecord.position.velocity,
+            satrec: satRecord.satrec // For future position updates
+        };
+        
+        // Add to scene and tracking array
+        scene.add(mesh);
+        satelliteMeshes.push(mesh);
+        renderedCount++;
+    });
+    
+    console.log(`✓ Rendered ${renderedCount} satellites on globe`);
+    console.log('  - LEO (cyan):', satelliteMeshes.filter(m => m.userData.orbitType === 'LEO').length);
+    console.log('  - MEO (teal):', satelliteMeshes.filter(m => m.userData.orbitType === 'MEO').length);
+    console.log('  - GEO (green):', satelliteMeshes.filter(m => m.userData.orbitType === 'GEO').length);
+    
+    // Initialize position tracking for interpolation (Task 1.3.6)
+    satelliteMeshes.forEach(mesh => {
+        satelliteCurrentPositions.push(mesh.position.clone());
+        satelliteTargetPositions.push(mesh.position.clone());
+    });
+}
+
+// ============================================
+// REAL-TIME SATELLITE UPDATES (TASK 1.3.6)
+// ============================================
+
+// Task 1.3.6: Propagate all satellite positions
+function propagateAllSatellites() {
+    const date = new Date();
+    let updateCount = 0;
+    
+    satelliteRecords.forEach((satRecord, index) => {
+        if (!satRecord || !satRecord.satrec) return;
+        
+        // Propagate to current time
+        const position = propagateSatellitePosition(satRecord, date);
+        
+        if (position && satelliteMeshes[index]) {
+            // Store current position as starting point for interpolation
+            satelliteCurrentPositions[index] = satelliteMeshes[index].position.clone();
+            
+            // Calculate new target position
+            const globePos = satellitePositionToVector3(
+                position.latitude,
+                position.longitude,
+                position.altitude
+            );
+            
+            // Store as target for interpolation
+            satelliteTargetPositions[index] = globePos;
+            
+            // Update userData with latest position info
+            satelliteMeshes[index].userData.latitude = position.latitude;
+            satelliteMeshes[index].userData.longitude = position.longitude;
+            satelliteMeshes[index].userData.altitude = position.altitude;
+            satelliteMeshes[index].userData.velocity = position.velocity;
+            
+            updateCount++;
+        }
+    });
+    
+    return updateCount;
+}
+
+// Task 1.3.6: Smooth interpolation between satellite positions
+function interpolateSatellitePositions() {
+    satelliteMeshes.forEach((mesh, index) => {
+        if (!satelliteTargetPositions[index] || !satelliteCurrentPositions[index]) return;
+        
+        const current = satelliteCurrentPositions[index];
+        const target = satelliteTargetPositions[index];
+        
+        // Smooth interpolation using lerp
+        mesh.position.x += (target.x - mesh.position.x) * interpolationSpeed;
+        mesh.position.y += (target.y - mesh.position.y) * interpolationSpeed;
+        mesh.position.z += (target.z - mesh.position.z) * interpolationSpeed;
+        
+        // Update current position for next frame
+        satelliteCurrentPositions[index].copy(mesh.position);
+    });
+}
+
+// Task 1.3.6: Update satellite positions in real-time
+function updateSatellitePositions() {
+    const currentTime = Date.now();
+    
+    // Check if we need to propagate new positions
+    if (currentTime - lastSatelliteUpdate >= satelliteUpdateInterval) {
+        const updateCount = propagateAllSatellites();
+        lastSatelliteUpdate = currentTime;
+        
+        // Optional: Log update (commented out to avoid console spam)
+        // console.log(`Updated ${updateCount} satellite positions`);
+    }
+    
+    // Interpolate positions every frame for smooth animation
+    interpolateSatellitePositions();
+}
+
+// ============================================
+// SATELLITE INTERACTION & ORBITAL PATHS (TASK 1.3.7)
+// ============================================
+
+// Task 1.3.7.2: Calculate orbital path for a satellite
+function calculateOrbitPath(satelliteMesh) {
+    const satRecord = satelliteRecords.find(rec => rec.name === satelliteMesh.userData.satelliteName);
+    if (!satRecord || !satRecord.satrec) {
+        console.warn('Cannot calculate orbit: satellite record not found');
+        return null;
+    }
+    
+    // Check cache first
+    const cacheKey = satelliteMesh.userData.satelliteName;
+    if (orbitPathCache.has(cacheKey)) {
+        return orbitPathCache.get(cacheKey);
+    }
+    
+    const orbitType = satelliteMesh.userData.orbitType;
+    const currentTime = new Date();
+    
+    // Determine orbit period and number of points based on orbit type
+    let orbitPeriodMinutes, numPoints;
+    switch (orbitType) {
+        case 'LEO':
+            orbitPeriodMinutes = 90;  // ~90 minute orbit
+            numPoints = 80;
+            break;
+        case 'MEO':
+            orbitPeriodMinutes = 720; // ~12 hour orbit
+            numPoints = 120;
+            break;
+        case 'GEO':
+            orbitPeriodMinutes = 1440; // ~24 hour orbit
+            numPoints = 180;
+            break;
+        default:
+            orbitPeriodMinutes = 90;
+            numPoints = 80;
+    }
+    
+    const timeStepMinutes = orbitPeriodMinutes / numPoints;
+    const points = [];
+    
+    // Calculate positions along the orbit
+    for (let i = 0; i <= numPoints; i++) {
+        const timeOffset = i * timeStepMinutes * 60 * 1000; // Convert to milliseconds
+        const futureTime = new Date(currentTime.getTime() + timeOffset);
+        
+        // Propagate satellite to this time
+        const position = propagateSatellitePosition(satRecord, futureTime);
+        
+        if (position) {
+            const point3D = satellitePositionToVector3(
+                position.latitude,
+                position.longitude,
+                position.altitude
+            );
+            points.push(point3D);
+        }
+    }
+    
+    // Cache the calculated path
+    if (points.length > 0) {
+        orbitPathCache.set(cacheKey, points);
+    }
+    
+    return points.length > 0 ? points : null;
+}
+
+// Task 1.3.7.3: Create orbital path line
+function createOrbitLine(points, isSelected = false) {
+    if (!points || points.length < 2) return null;
+    
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    
+    // Use theme colors: gray for hover, brighter for selected
+    const color = isSelected ? 0x9BB3C9 : 0x5E6A7A;
+    const opacity = isSelected ? 0.8 : 0.6;
+    
+    const material = new THREE.LineBasicMaterial({
+        color: color,
+        opacity: opacity,
+        transparent: true,
+        linewidth: 2
+    });
+    
+    const line = new THREE.Line(geometry, material);
+    return line;
+}
+
+// Task 1.3.7.3: Remove current orbital path from scene
+function removeOrbitLine() {
+    if (currentOrbitLine) {
+        scene.remove(currentOrbitLine);
+        
+        // Dispose geometry and material to free memory
+        if (currentOrbitLine.geometry) {
+            currentOrbitLine.geometry.dispose();
+        }
+        if (currentOrbitLine.material) {
+            currentOrbitLine.material.dispose();
+        }
+        
+        currentOrbitLine = null;
+    }
+}
+
+// Task 1.3.7.3: Show orbital path for a satellite
+function showOrbitPath(satelliteMesh, isSelected = false) {
+    console.log('showOrbitPath called for:', satelliteMesh.userData.satelliteName, 'isSelected:', isSelected);
+    
+    // Remove existing path first
+    removeOrbitLine();
+    
+    // Calculate orbital path
+    const points = calculateOrbitPath(satelliteMesh);
+    console.log('Calculated orbit points:', points ? points.length : 0);
+    
+    if (points) {
+        // Create and add orbit line to scene
+        currentOrbitLine = createOrbitLine(points, isSelected);
+        if (currentOrbitLine) {
+            currentOrbitLine.userData.isHover = !isSelected;
+            scene.add(currentOrbitLine);
+            console.log('✓ Orbital path added to scene');
+        } else {
+            console.warn('Failed to create orbit line');
+        }
+    } else {
+        console.warn('No orbit points calculated');
+    }
+}
+
+// Task 1.3.7.4 & 1.3.7.5: Handle satellite hover
+function onSatelliteHover(event) {
+    updateMousePosition(event);
+    raycaster.setFromCamera(mouse, camera);
+    
+    const satelliteIntersects = raycaster.intersectObjects(satelliteMeshes);
+    
+    // Reset previous hover if different satellite
+    if (hoveredSatellite && (satelliteIntersects.length === 0 || satelliteIntersects[0].object !== hoveredSatellite)) {
+        // Only reset if not selected
+        if (hoveredSatellite !== selectedSatellite) {
+            hoveredSatellite.scale.set(1, 1, 1);
+            hoveredSatellite.material.emissiveIntensity = 0.9;
+            removeOrbitLine();
+        }
+        hoveredSatellite = null;
+    }
+    
+    if (satelliteIntersects.length > 0) {
+        const mesh = satelliteIntersects[0].object;
+        
+        // Don't apply hover effect to selected satellite
+        if (mesh !== selectedSatellite) {
+            renderer.domElement.style.cursor = 'pointer';
+            
+            // Scale up and brighten
+            mesh.scale.set(1.3, 1.3, 1.3);
+            mesh.material.emissiveIntensity = 1.2;
+            
+            // Show orbital path (gray)
+            if (mesh !== hoveredSatellite) {
+                showOrbitPath(mesh, false);
+            }
+            
+            hoveredSatellite = mesh;
+        } else {
+            renderer.domElement.style.cursor = 'pointer';
+        }
+    } else {
+        // Not hovering over any satellite
+        if (!selectedSatellite) {
+            renderer.domElement.style.cursor = 'default';
+        }
+    }
+}
+
+// Task 1.3.7.5: Handle satellite click
+function onSatelliteClick(event) {
+    // Note: Drag detection already done in onStationClick
+    // This function is called from onStationClick when a satellite is detected
+    
+    updateMousePosition(event);
+    raycaster.setFromCamera(mouse, camera);
+    
+    // Check satellites
+    const satelliteIntersects = raycaster.intersectObjects(satelliteMeshes);
+    
+    if (satelliteIntersects.length > 0) {
+        const clickedMesh = satelliteIntersects[0].object;
+        
+        console.log('Satellite selected:', clickedMesh.userData.satelliteName);
+        
+        // Reset previous selection
+        if (selectedSatellite && selectedSatellite !== clickedMesh) {
+            selectedSatellite.scale.set(1, 1, 1);
+            selectedSatellite.material.emissiveIntensity = 0.9;
+        }
+        
+        // Toggle selection
+        if (selectedSatellite === clickedMesh) {
+            // Deselect
+            console.log('Deselecting satellite');
+            selectedSatellite.scale.set(1, 1, 1);
+            selectedSatellite.material.emissiveIntensity = 0.9;
+            selectedSatellite = null;
+            removeOrbitLine();
+            hideSatelliteInfo();
+        } else {
+            // Select new satellite
+            console.log('Selecting new satellite');
+            selectedSatellite = clickedMesh;
+            selectedSatellite.scale.set(1.5, 1.5, 1.5);
+            selectedSatellite.material.emissiveIntensity = 1.4;
+            
+            // Show orbital path (brighter color for selected)
+            console.log('Showing orbital path for:', clickedMesh.userData.satelliteName);
+            showOrbitPath(selectedSatellite, true);
+            
+            // Display satellite info
+            displaySatelliteInfo(selectedSatellite.userData);
+        }
+    }
+}
+
+// Task 1.3.7.6: Display satellite information panel
+function displaySatelliteInfo(satelliteData) {
+    const panel = document.getElementById('satellite-info');
+    if (!panel) {
+        console.error('Satellite info panel not found');
+        return;
+    }
+    
+    // Update panel content
+    document.getElementById('sat-name').textContent = satelliteData.satelliteName;
+    document.getElementById('sat-orbit-type').textContent = satelliteData.orbitType;
+    document.getElementById('sat-altitude').textContent = satelliteData.altitude.toFixed(2) + ' km';
+    document.getElementById('sat-velocity').textContent = satelliteData.velocity.toFixed(2) + ' km/s';
+    document.getElementById('sat-latitude').textContent = satelliteData.latitude.toFixed(4) + '°';
+    document.getElementById('sat-longitude').textContent = satelliteData.longitude.toFixed(4) + '°';
+    
+    // Show panel
+    panel.classList.remove('hidden');
+    panel.style.display = 'block';
+    
+    console.log('✓ Displaying satellite info for:', satelliteData.satelliteName);
+}
+
+// Task 1.3.7.6: Hide satellite information panel
+function hideSatelliteInfo() {
+    const panel = document.getElementById('satellite-info');
+    if (panel) {
+        panel.classList.add('hidden');
+        panel.style.display = 'none';
+    }
+}
+
+// Task 1.3.7.6: Setup satellite info panel handlers
+function setupSatelliteInfoPanelHandlers() {
+    const closeBtn = document.getElementById('close-satellite-info');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            hideSatelliteInfo();
+            
+            // Deselect satellite
+            if (selectedSatellite) {
+                selectedSatellite.scale.set(1, 1, 1);
+                selectedSatellite.material.emissiveIntensity = 0.9;
+                selectedSatellite = null;
+                removeOrbitLine();
+            }
+        });
+        console.log('✓ Satellite info panel close button initialized');
+    }
+}
+
+// Task 1.3.7.1: Setup satellite interaction event listeners
+function setupSatelliteInteraction() {
+    // Add satellite-specific hover handler
+    renderer.domElement.addEventListener('mousemove', onSatelliteHover);
+    
+    // Click handler is integrated into onStationClick function
+    // which checks satellites first before stations
+    
+    console.log('✓ Satellite interaction enabled');
 }
 
 // Start the application

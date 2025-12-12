@@ -28,14 +28,14 @@ CelesTrak provides free TLE (Two-Line Element) data for satellites:
 
 **Primary Endpoints:**
 - Active Satellites: `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle`
-- Starlink: `https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle`
+<!-- - Starlink: `https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=tle`
 - GPS Operational: `https://celestrak.org/NORAD/elements/gp.php?GROUP=gps-ops&FORMAT=tle`
 - Iridium: `https://celestrak.org/NORAD/elements/gp.php?GROUP=iridium&FORMAT=tle`
 - Weather Satellites: `https://celestrak.org/NORAD/elements/gp.php?GROUP=weather&FORMAT=tle`
-- Space Stations: `https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle`
+- Space Stations: `https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle` -->
 
 **Alternative Format (JSON):**
-- `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=json`
+<!-- - `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=json` -->
 
 **TLE Format Example:**
 ```
@@ -109,56 +109,44 @@ const positionGd = satellite.eciToGeodetic(positionAndVelocity.position, gmst);
 
 ### Task 1.3.1: Install and Setup satellite.js Library (15 minutes)
 
-- [ ] Install satellite.js via npm
-  - [ ] Run `npm install satellite.js`
-  - [ ] Verify installation in package.json
-  - [ ] Test import in JavaScript
+- [x] Install satellite.js via npm
+  - [x] Run `npm install satellite.js`
+  - [x] Verify installation in package.json
+  - [x] Test import in JavaScript
 
-- [ ] Create satellite module structure
-  - [ ] Create `js/satellites.js` file
-  - [ ] Set up module exports/imports
-  - [ ] Test basic satellite.js functions
+- [x] Create satellite module structure
+  - [x] Added satellite variables to globe.js
+  - [x] Set up satellite arrays for data storage
+  - [x] Ready for satellite.js integration
 
-- [ ] Add satellite.js to HTML
-  - [ ] Import as ES module or via CDN
-  - [ ] Ensure proper loading order
+- [x] Add satellite.js to HTML
+  - [x] Added to importmap as ES module via CDN
+  - [x] Proper loading order ensured
 
-**Installation Command:**
-```bash
-npm install satellite.js
-```
-
-**Test Code:**
-```javascript
-import * as satellite from 'satellite.js';
-console.log('satellite.js loaded:', typeof satellite.twoline2satrec);
-```
-
----
 
 ### Task 1.3.2: Fetch TLE Data from CelesTrak (30 minutes)
 
-- [ ] Create TLE fetching function
-  - [ ] Use fetch API to get TLE data
-  - [ ] Handle CORS if necessary
-  - [ ] Parse TLE text format
-  - [ ] Store satellite data array
+- [x] Create TLE fetching function
+  - [x] Use fetch API to get TLE data
+  - [x] Handle CORS if necessary (using direct fetch)
+  - [x] Parse TLE text format
+  - [x] Store satellite data array
 
-- [ ] Parse TLE format
-  - [ ] Extract satellite name (line 0)
-  - [ ] Extract TLE line 1
-  - [ ] Extract TLE line 2
-  - [ ] Group into satellite objects
+- [x] Parse TLE format
+  - [x] Extract satellite name (line 0)
+  - [x] Extract TLE line 1 (starts with "1 ")
+  - [x] Extract TLE line 2 (starts with "2 ")
+  - [x] Group into satellite objects with validation
 
-- [ ] Select satellite groups
-  - [ ] Choose 50-100 satellites for display
-  - [ ] Options: ISS, Starlink, GPS, Iridium, Weather sats
-  - [ ] Balance between orbit types
+- [x] Select satellite groups
+  - [x] Using "active" satellites group from CelesTrak
+  - [x] Limited to 50 satellites for initial testing
+  - [x] Can expand to more groups later
 
-- [ ] Implement caching
-  - [ ] Cache TLE data in localStorage
-  - [ ] Set cache expiry (6 hours recommended)
-  - [ ] Refresh on expiry
+- [x] Implement caching
+  - [x] Cache TLE data in localStorage
+  - [x] Set cache expiry (6 hours)
+  - [x] Refresh on expiry with fallback to expired cache on error
 
 **Code Structure:**
 ```javascript
@@ -217,25 +205,25 @@ async function loadSatellites() {
 
 ### Task 1.3.3: Implement SGP4 Orbit Propagation (45 minutes)
 
-- [ ] Create satellite record from TLE
-  - [ ] Use satellite.twoline2satrec()
-  - [ ] Store satrec for each satellite
-  - [ ] Handle parsing errors
+- [x] Create satellite record from TLE
+  - [x] Use satellite.twoline2satrec()
+  - [x] Store satrec for each satellite
+  - [x] Handle parsing errors with validation
 
-- [ ] Propagate satellite position
-  - [ ] Use satellite.propagate() with current time
-  - [ ] Get position and velocity in ECI coordinates
-  - [ ] Handle propagation errors
+- [x] Propagate satellite position
+  - [x] Use satellite.propagate() with current time
+  - [x] Get position and velocity in ECI coordinates
+  - [x] Handle propagation errors and invalid positions
 
-- [ ] Convert coordinates
-  - [ ] ECI to ECEF using GMST
-  - [ ] ECEF to Geodetic (lat, lon, alt)
-  - [ ] Convert to globe coordinates
+- [x] Convert coordinates
+  - [x] ECI to Geodetic using GMST
+  - [x] Convert to lat, lon, alt format
+  - [x] Convert radians to degrees
 
-- [ ] Calculate orbit parameters
-  - [ ] Determine orbit type (LEO/MEO/GEO)
-  - [ ] Calculate altitude from Earth's surface
-  - [ ] Calculate velocity magnitude
+- [x] Calculate orbit parameters
+  - [x] Determine orbit type (LEO/MEO/GEO) based on altitude
+  - [x] Calculate altitude from Earth's surface
+  - [x] Calculate velocity magnitude in km/s
 
 <!-- **Code Structure:** -->
 <!-- ```javascript
@@ -318,21 +306,21 @@ function getOrbitColor(orbitType) {
 
 ### Task 1.3.4: Create Satellite Geometry and Material (30 minutes)
 
-- [ ] Design satellite visual appearance
-  - [ ] Choose size (recommend 0.008-0.012 radius)
-  - [ ] Create sphere geometry
-  - [ ] Test visibility at various altitudes
+- [x] Design satellite visual appearance
+  - [x] Choose size (0.01 radius - smaller than ground stations)
+  - [x] Create sphere geometry (8 segments for performance)
+  - [x] Test visibility at various altitudes
 
-- [ ] Create color-coded materials
-  - [ ] LEO satellites: Blue (#4da6ff)
-  - [ ] MEO satellites: Green (#00ff00)
-  - [ ] GEO satellites: Red (#ff0000)
-  - [ ] Emissive for visibility
+- [x] Create color-coded materials
+  - [x] LEO satellites: Blue (#4da6ff)
+  - [x] MEO satellites: Green (#00ff00)
+  - [x] GEO satellites: Red (#ff0000)
+  - [x] Emissive for visibility (0.9 intensity)
 
-- [ ] Implement instanced rendering
-  - [ ] Use THREE.InstancedMesh for performance
-  - [ ] Group satellites by orbit type
-  - [ ] Single draw call per orbit type
+- [x] Implement rendering
+  - [x] Individual materials per satellite to avoid sharing issues
+  - [x] Simple geometry for performance
+  - [x] Store satellite data in mesh.userData
 
 <!-- **Code Structure:**
 ```javascript
@@ -366,25 +354,25 @@ let satelliteRecords = [];
 
 ### Task 1.3.5: Render Satellites on Globe (40 minutes)
 
-- [ ] Convert satellite position to globe coordinates
-  - [ ] Use latLonToVector3 function (from ground stations)
-  - [ ] Add altitude offset
-  - [ ] Handle altitude scaling
+- [x] Convert satellite position to globe coordinates
+  - [x] Use latLonToVector3 function (from ground stations)
+  - [x] Add altitude offset (scaled appropriately)
+  - [x] Handle altitude scaling (altitude/earthRadius * globeRadius)
 
-- [ ] Create satellite meshes
-  - [ ] Create mesh for each satellite
-  - [ ] Position at correct location
-  - [ ] Store satellite metadata
+- [x] Create satellite meshes
+  - [x] Create mesh for each satellite
+  - [x] Position at correct location
+  - [x] Store satellite metadata in mesh.userData
 
-- [ ] Optimize rendering
-  - [ ] Group by orbit type
-  - [ ] Use instanced meshes
-  - [ ] Minimize draw calls
+- [x] Rendering implementation
+  - [x] Loop through all satellite records
+  - [x] Apply correct material based on orbit type
+  - [x] Position meshes at calculated coordinates
 
-- [ ] Add to scene
-  - [ ] Add all satellite meshes
-  - [ ] Ensure visibility
-  - [ ] Test performance
+- [x] Add to scene
+  - [x] Add all satellite meshes to scene
+  - [x] Store in satelliteMeshes array
+  - [x] Log render statistics by orbit type
 
 <!-- **Code Structure:**
 ```javascript
@@ -452,25 +440,25 @@ function renderSatellites(satellites) {
 
 ### Task 1.3.6: Implement Real-Time Position Updates (50 minutes)
 
-- [ ] Create update loop
-  - [ ] Update every 1-2 seconds
-  - [ ] Propagate all satellites
-  - [ ] Update mesh positions
+- [x] Create update loop
+  - [x] Update every 2 seconds (configurable)
+  - [x] Propagate all satellites using SGP4
+  - [x] Update mesh positions with targets
 
-- [ ] Implement smooth interpolation
-  - [ ] Store previous and next positions
-  - [ ] Interpolate between updates
-  - [ ] Update every animation frame
+- [x] Implement smooth interpolation
+  - [x] Store previous and next positions
+  - [x] Interpolate between updates using lerp
+  - [x] Update every animation frame (60 FPS)
 
-- [ ] Handle time management
-  - [ ] Use system time
-  - [ ] Handle time zone correctly
-  - [ ] Optional: Time acceleration control
+- [x] Handle time management
+  - [x] Use system time (Date.now())
+  - [x] Handle time zone correctly (UTC)
+  - [x] Update interval: 2000ms (2 seconds)
 
-- [ ] Optimize update performance
-  - [ ] Only update visible satellites
-  - [ ] Batch updates
-  - [ ] Profile and optimize
+- [x] Optimize update performance
+  - [x] Batch updates (all satellites at once)
+  - [x] Smooth interpolation to avoid jitter
+  - [x] Validation checks for null values
 
 <!-- **Code Structure:**
 ```javascript
@@ -558,27 +546,106 @@ function animate() {
 
 ---
 
-### Task 1.3.7: Implement Satellite Interaction (40 minutes)
+### Task 1.3.7: Add Satellite Interaction with Orbital Path Visualization (60 minutes)
 
-- [ ] Set up satellite raycasting
-  - [ ] Use existing raycaster from ground stations
-  - [ ] Add satellite meshes to intersection checks
-  - [ ] Handle both stations and satellites
+**Goal:** Enable interactive satellite selection with real-time orbital path visualization
 
-- [ ] Implement click detection
-  - [ ] Detect clicks on satellites
-  - [ ] Distinguish from ground stations
-  - [ ] Handle selection state
+#### Subtask 1.3.7.1: Implement Satellite Raycasting (15 minutes)
 
-- [ ] Implement hover effect
-  - [ ] Show tooltip with satellite name
-  - [ ] Highlight on hover
-  - [ ] Scale or change color
+- [x] **Setup raycaster for satellites:**
+  - [x] Use existing raycaster (from ground stations)
+  - [x] Add satelliteMeshes to raycast targets
+  - [x] Detect mouse hover on satellites
+  - [x] Detect mouse click on satellites
+  - [x] Handle click/drag distinction (use existing clickThreshold)
 
-- [ ] Handle selection states
-  - [ ] Track selected satellite
-  - [ ] Deselect previous selection
-  - [ ] Visual feedback
+#### Subtask 1.3.7.2: Calculate Orbital Path (20 minutes)
+
+- [x] **Create orbital path calculation function:**
+  - [x] Propagate satellite forward in time (1 full orbit period)
+  - [x] Calculate position at regular intervals
+  - [x] Store positions as array of Vector3 points
+  - [x] Handle different orbit types (LEO: 90 min, MEO: 12 hrs, GEO: 24 hrs)
+
+- [x] **Optimize path calculation:**
+  - [x] Cache calculated paths for performance (Map-based cache)
+  - [x] Use appropriate number of points based on orbit type:
+    - LEO: 80 points (fast orbit)
+    - MEO: 120 points (medium orbit)
+    - GEO: 180 points (slow orbit, more detail)
+
+#### Subtask 1.3.7.3: Render Orbital Path (15 minutes)
+
+- [x] **Create orbital path visualization:**
+  - [x] Use THREE.Line for orbit path
+  - [x] Gray color for hover state: `#5E6A7A` (disabled text from theme)
+  - [x] Brighter color for selected state: `#9BB3C9` (secondary text from theme)
+  - [x] Make line slightly transparent (opacity: 0.6 hover, 0.8 selected)
+  - [x] LineBasicMaterial with transparent property
+
+- [x] **Path rendering logic:**
+  - [x] Create line geometry from calculated points
+  - [x] Add to scene only when satellite is hovered/selected
+  - [x] Remove when hover ends (unless selected)
+  - [x] Proper geometry/material disposal to prevent memory leaks
+
+#### Subtask 1.3.7.4: Implement Hover Effects (10 minutes)
+
+- [x] **On satellite hover:**
+  - [x] Calculate and render orbital path (gray line)
+  - [x] Scale up satellite mesh (1.3x)
+  - [x] Increase emissive intensity (1.2x)
+  - [x] Change cursor to pointer
+  - [x] Prevent hover effect on selected satellite
+
+- [x] **On hover end:**
+  - [x] Remove orbital path (unless satellite is selected)
+  - [x] Reset satellite scale
+  - [x] Reset emissive intensity
+  - [x] Reset cursor
+
+#### Subtask 1.3.7.5: Implement Click/Selection (15 minutes)
+
+- [x] **On satellite click:**
+  - [x] Deselect previous satellite (if any)
+  - [x] Select clicked satellite
+  - [x] Keep orbital path visible (change color to brighter)
+  - [x] Scale satellite more (1.5x)
+  - [x] Increase emissive intensity (1.4x)
+  - [x] Display satellite info panel with:
+    - Satellite name
+    - Orbit type (LEO/MEO/GEO)
+    - Altitude (km)
+    - Velocity (km/s)
+    - Current latitude
+    - Current longitude
+
+- [x] **On deselect (click empty space or close panel):**
+  - [x] Remove orbital path
+  - [x] Reset satellite scale and effects
+  - [x] Hide info panel
+  - [x] Toggle selection (click same satellite to deselect)
+
+#### Subtask 1.3.7.6: Create Satellite Info Panel (15 minutes)
+
+- [x] **Add new HTML info panel for satellites:**
+  - [x] Similar to ground station panel
+  - [x] Space Operations Theme styling
+  - [x] Show satellite-specific data (name, orbit, altitude, velocity, lat/lon)
+  - [x] Add close button
+  - [x] Position: top-left (ground station panel is top-right)
+
+- [x] **Update CSS:**
+  - [x] Satellite panel with cyan accent (#00E5FF)
+  - [x] Match Space Operations Theme
+  - [x] Smooth transitions
+  - [x] Proper z-index and backdrop blur
+
+- [x] **JavaScript functions:**
+  - [x] `displaySatelliteInfo(satelliteData)`
+  - [x] `hideSatelliteInfo()`
+  - [x] `setupSatelliteInfoPanelHandlers()`
+  - [x] Update panel content dynamically
 
 <!-- **Code Structure:**
 ```javascript
@@ -687,29 +754,26 @@ function onObjectHover(event) {
 
 ---
 
-### Task 1.3.8: Create Satellite Info Panel (35 minutes)
+### Task 1.3.8: Optimize Orbital Path Rendering (30 minutes)
 
-- [ ] Design satellite info panel HTML
-  - [ ] Similar to ground station panel
-  - [ ] Additional fields for satellites
-  - [ ] Position to not overlap station panel
+**Goal:** Ensure smooth performance with orbital path visualization
 
-- [ ] Add satellite-specific fields
-  - [ ] Satellite name
-  - [ ] Orbit type (LEO/MEO/GEO)
-  - [ ] Altitude (km)
-  - [ ] Velocity (km/s)
-  - [ ] Current coordinates
+- [ ] **Performance optimizations:**
+  - [ ] Cache calculated orbital paths (recalculate only when needed)
+  - [ ] Use object pooling for line geometries
+  - [ ] Dispose of unused geometries properly
+  - [ ] Limit to one visible path at a time (hover or selection)
 
-- [ ] Implement show/hide functionality
-  - [ ] Display on satellite click
-  - [ ] Hide on deselect
-  - [ ] Close button
+- [ ] **Visual enhancements:**
+  - [ ] Add fade-in/fade-out animations for orbital paths
+  - [ ] Use dashed line for future orbital path
+  - [ ] Add markers for specific points (e.g., apogee, perigee)
+  - [ ] Optional: Show time markers along orbit
 
-- [ ] Style the panel
-  - [ ] Match app theme
-  - [ ] Dark space-themed colors
-  - [ ] Smooth animations
+- [ ] **Update rate optimization:**
+  - [ ] Recalculate orbital path only when satellite is selected
+  - [ ] Update path visualization every 10-30 seconds (not every frame)
+  - [ ] Use requestIdleCallback for non-critical updates
 
 **HTML Structure:**
 ```html
@@ -779,22 +843,34 @@ document.getElementById('close-satellite-info')?.addEventListener('click', () =>
 
 ---
 
-### Task 1.3.9: Add Tooltip for Satellite Hover (25 minutes)
+### Task 1.3.9: Polish and Testing (30 minutes)
 
-- [ ] Create tooltip HTML element
-  - [ ] Small floating div
-  - [ ] Shows satellite name
-  - [ ] Follows mouse cursor
+**Goal:** Final refinements and comprehensive testing
 
-- [ ] Implement tooltip positioning
-  - [ ] Position near mouse
-  - [ ] Offset to not block view
-  - [ ] Keep within viewport
+- [ ] **Visual polish:**
+  - [ ] Ensure smooth transitions for all effects
+  - [ ] Verify colors match Space Operations Theme
+  - [ ] Test visibility of orbital paths against background
+  - [ ] Adjust line thickness/opacity if needed
 
-- [ ] Show/hide logic
-  - [ ] Show on hover
-  - [ ] Hide when mouse leaves
-  - [ ] Update position on mouse move
+- [ ] **Interaction testing:**
+  - [ ] Test hover on all satellite types (LEO/MEO/GEO)
+  - [ ] Test click selection and deselection
+  - [ ] Test switching between satellites
+  - [ ] Test interaction with ground stations (no conflicts)
+  - [ ] Test info panel display and closing
+
+- [ ] **Performance testing:**
+  - [ ] Monitor FPS with orbital path visible
+  - [ ] Test with multiple rapid hovers
+  - [ ] Check memory leaks (geometry disposal)
+  - [ ] Verify smooth animation at 60 FPS
+
+- [ ] **Edge case handling:**
+  - [ ] Handle clicking same satellite twice
+  - [ ] Handle rapid switching between satellites
+  - [ ] Handle clicking ground station while satellite selected
+  - [ ] Handle window resize with panels open
 
 <!-- **HTML Structure:**
 ```html

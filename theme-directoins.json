@@ -1,0 +1,55 @@
+{
+    "name": "SpaceOperationsTheme",
+    "colors": {
+      "background": {
+        "primary": "#05070D",
+        "secondary": "#0B0F19",
+        "panel": "#111726",
+        "starfield": "rgba(255,255,255,0.05)"
+      },
+      "text": {
+        "primary": "#E6F3FF",
+        "secondary": "#9BB3C9",
+        "disabled": "#5E6A7A",
+        "accent": "#37F0C6"
+      },
+      "accents": {
+        "satellite": "#00E5FF",
+        "ground": "#FFB039",
+        "orbitLine": "#37F0C6",
+        "alert": "#FF4656",
+        "warning": "#EFCB68",
+        "success": "#52E38F"
+      },
+      "ui": {
+        "border": "rgba(255,255,255,0.08)",
+        "borderGlow": "rgba(0,229,255,0.35)",
+        "selection": "rgba(0,229,255,0.18)",
+        "card": "rgba(255,255,255,0.04)",
+        "hover": "rgba(255,255,255,0.06)"
+      },
+      "effects": {
+        "glowSatellite": "0px 0px 12px rgba(0,229,255,0.55)",
+        "glowGround": "0px 0px 10px rgba(255,176,57,0.45)"
+      }
+    },
+    "typography": {
+      "primary": "Eurostile Extended, Oxanium, sans-serif",
+      "secondary": "Inter, Roboto Mono, monospace",
+      "heading": {
+        "letterSpacing": "0.1em",
+        "transform": "uppercase",
+        "weight": 600
+      },
+      "body": {
+        "weight": 400,
+        "lineHeight": 1.5
+      }
+    },
+    "motion": {
+      "orbitPulse": "pulse 4s ease-in-out infinite",
+      "groundPing": "ping 3s ease-out infinite",
+      "starfieldDrift": "drift 60s linear infinite"
+    }
+  }
+  
