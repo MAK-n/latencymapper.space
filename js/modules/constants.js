@@ -57,6 +57,7 @@ export const COLORS = {
 };
 
 export const URLS = {
+    // TLE_DATA: 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle',
     TLE_DATA: 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=tle',
     GROUND_STATIONS: './data/ground-stations.json',
     EARTH_TEXTURE: './texture/nasa-blue-marble-1.png'

@@ -1,5 +1,5 @@
 // ============================================
-// GROUND STATION INTERACTION
+// GROUND STATION INTERACTION (Rewritten Option C)
 // ============================================
 
 import { CONFIG, COLORS } from './constants.js';
@@ -10,7 +10,7 @@ let mouseDownPos = { x: 0, y: 0 };
 let mouseUpPos = { x: 0, y: 0 };
 
 /**
- * Handle mouse down event
+ * Mouse Down
  */
 function onMouseDown(event) {
     mouseDownPos.x = event.clientX;
@@ -18,149 +18,142 @@ function onMouseDown(event) {
 }
 
 /**
- * Handle station click
+ * Handle Click — using Option C:
+ * Decide based on *nearest* intersected object (station or satellite)
  */
-function onStationClick(event, mouse, raycaster, camera, stationMeshes, satelliteMeshes, onSatelliteClick) {
-    event.stopPropagation();
-    
+function onStationClick(
+    event,
+    mouse,
+    raycaster,
+    camera,
+    stationMeshes,
+    satelliteMeshes,
+    onSatelliteClick
+) {
     mouseUpPos.x = event.clientX;
     mouseUpPos.y = event.clientY;
-    
-    // Check for drag
+
+    // Detect drag (threshold 15px)
     const dx = mouseUpPos.x - mouseDownPos.x;
     const dy = mouseUpPos.y - mouseDownPos.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    if (distance > CONFIG.CLICK_THRESHOLD) {
-        console.log('Drag detected, ignoring click');
+    if (distance > 15) return;
+
+    // Update mouse for raycasting
+    updateMousePosition(event, mouse, event.target);
+    raycaster.setFromCamera(mouse, camera);
+
+    // Intersections
+    const stationIntersects = raycaster.intersectObjects(stationMeshes, true);
+    const satelliteIntersects = raycaster.intersectObjects(satelliteMeshes, true);
+
+    // Combine + sort by distance to camera
+    const combined = [...stationIntersects, ...satelliteIntersects];
+    if (combined.length === 0) {
+        resetSelection();
+        hideStationInfo();
         return;
     }
-    
-    // Update mouse position
-    updateMousePosition(event, mouse, event.target);
-    
-    // Cast ray from camera through mouse position
-    raycaster.setFromCamera(mouse, camera);
-    
-    // Check satellites first (Task 1.3.7.1)
-    const satelliteIntersects = raycaster.intersectObjects(satelliteMeshes);
-    
-    if (satelliteIntersects.length > 0) {
-        // Satellite was clicked - handle it
-        console.log('Satellite clicked, handling...');
+
+    const nearest = combined.sort((a, b) => a.distance - b.distance)[0];
+    const clickedObj = nearest.object;
+
+    // Determine type using mesh membership
+    const isSatellite = satelliteMeshes.includes(clickedObj);
+    const isStation = stationMeshes.includes(clickedObj);
+
+    if (isSatellite) {
         onSatelliteClick(event);
         return;
     }
-    
-    // Check for intersections with station meshes
-    const intersects = raycaster.intersectObjects(stationMeshes);
-    
-    console.log('Click detected, intersects:', intersects.length);
-    
-    if (intersects.length > 0) {
-        const clickedMesh = intersects[0].object;
-        const stationData = clickedMesh.userData;
-        
-        console.log('Station clicked:', stationData.stationName);
-        
-        // Reset previous selection completely
-        if (selectedStation && selectedStation !== clickedMesh) {
-            console.log('Resetting previous selection');
-            selectedStation.material.color.setHex(COLORS.STATION_DEFAULT);
-            selectedStation.material.emissive.setHex(COLORS.STATION_EMISSIVE);
-            selectedStation.material.emissiveIntensity = 0.8;
-            selectedStation.scale.set(1, 1, 1);
-        }
-        
-        // Toggle selection
-        if (selectedStation === clickedMesh) {
-            // Deselect
-            console.log('Deselecting current station');
-            selectedStation.material.color.setHex(COLORS.STATION_DEFAULT);
-            selectedStation.material.emissive.setHex(COLORS.STATION_EMISSIVE);
-            selectedStation.material.emissiveIntensity = 0.8;
-            selectedStation.scale.set(1, 1, 1);
-            selectedStation = null;
-            hideStationInfo();
-        } else {
-            // Select new station
-            console.log('Selecting new station');
-            selectedStation = clickedMesh;
-            
-            // Apply selection style
-            selectedStation.material.color.setHex(COLORS.STATION_SELECTED);
-            selectedStation.material.emissive.setHex(COLORS.STATION_SELECTED);
-            selectedStation.material.emissiveIntensity = 1.2;
-            selectedStation.scale.set(1.5, 1.5, 1.5);
-            
-            console.log(`Selected: ${stationData.stationName} (${stationData.latitude}°, ${stationData.longitude}°)`);
-            
-            // Display info panel
-            console.log('Calling displayStationInfo...');
-            displayStationInfo(stationData);
-        }
-    } else {
-        // Clicked empty space
-        console.log('Clicked empty space');
-        if (selectedStation) {
-            console.log('Deselecting station');
-            selectedStation.material.color.setHex(COLORS.STATION_DEFAULT);
-            selectedStation.material.emissive.setHex(COLORS.STATION_EMISSIVE);
-            selectedStation.material.emissiveIntensity = 0.8;
-            selectedStation.scale.set(1, 1, 1);
-            selectedStation = null;
-            hideStationInfo();
-        }
+
+    if (isStation) {
+        handleStationSelection(clickedObj);
+        return;
     }
+
+    // Fallback: clicked empty or helper object
+    resetSelection();
+    hideStationInfo();
 }
 
 /**
- * Handle station hover
+ * Select / Deselect Station Logic
  */
-function onStationHover(event, mouse, raycaster, camera, stationMeshes, renderer) {
-    updateMousePosition(event, mouse, event.target);
-    raycaster.setFromCamera(mouse, camera);
-    
-    const intersects = raycaster.intersectObjects(stationMeshes);
-    
-    if (intersects.length > 0) {
-        renderer.domElement.style.cursor = 'pointer';
-    } else {
-        renderer.domElement.style.cursor = 'default';
+function handleStationSelection(clickedMesh) {
+    const stationData = clickedMesh.userData;
+
+    // Reset previously selected
+    if (selectedStation && selectedStation !== clickedMesh) {
+        resetStationVisuals(selectedStation);
+    }
+
+    // Toggle selection
+    if (selectedStation === clickedMesh) {
+        resetStationVisuals(selectedStation);
+        hideStationInfo();
+        selectedStation = null;
+        return;
+    }
+
+    // Select new station
+    selectedStation = clickedMesh;
+
+    // Apply highlight
+    clickedMesh.material.color.setHex(COLORS.STATION_SELECTED);
+    clickedMesh.material.emissive.setHex(COLORS.STATION_SELECTED);
+    clickedMesh.material.emissiveIntensity = 1.2;
+    clickedMesh.scale.set(1.5, 1.5, 1.5);
+
+    displayStationInfo(stationData);
+}
+
+/**
+ * Reset visuals of a station
+ */
+function resetStationVisuals(mesh) {
+    mesh.material.color.setHex(COLORS.STATION_DEFAULT);
+    mesh.material.emissive.setHex(COLORS.STATION_EMISSIVE);
+    mesh.material.emissiveIntensity = 0.8;
+    mesh.scale.set(1, 1, 1);
+}
+
+/**
+ * Reset current selection
+ */
+function resetSelection() {
+    if (selectedStation) {
+        resetStationVisuals(selectedStation);
+        selectedStation = null;
     }
 }
 
 /**
- * Display station information panel
+ * Display Info Panel
  */
 function displayStationInfo(stationData) {
     const panel = document.getElementById('station-info');
-    if (!panel) {
-        console.error('Station info panel not found');
-        return;
-    }
-    
-    console.log('displayStationInfo called with:', stationData);
-    console.log('Panel element found:', panel);
-    
-    // Update panel content
-    document.getElementById('station-name').textContent = stationData.stationName;
-    document.getElementById('station-latitude').textContent = stationData.latitude.toFixed(2) + '°';
-    document.getElementById('station-longitude').textContent = stationData.longitude.toFixed(2) + '°';
-    document.getElementById('station-elevation').textContent = stationData.elevation + ' m';
-    document.getElementById('station-type').textContent = stationData.type;
-    
-    // Show panel
+    if (!panel) return;
+
+    // Update HTML fields
+    const nameEl = document.getElementById('station-name');
+    const latEl = document.getElementById('station-lat');
+    const lonEl = document.getElementById('station-lon');
+    const elevEl = document.getElementById('station-elevation');
+    const typeEl = document.getElementById('station-type');
+
+    if (nameEl) nameEl.textContent = stationData.stationName;
+    if (latEl) latEl.textContent = stationData.latitude.toFixed(2) + '°';
+    if (lonEl) lonEl.textContent = stationData.longitude.toFixed(2) + '°';
+    if (elevEl) elevEl.textContent = stationData.elevation + ' m';
+    if (typeEl) typeEl.textContent = stationData.type;
+
     panel.classList.remove('hidden');
     panel.style.display = 'block';
-    
-    console.log('✓ Station info panel should now be visible');
-    console.log('Panel classes:', panel.className);
-    console.log('Panel display style:', panel.style.display);
 }
 
 /**
- * Hide station information panel
+ * Hide Info Panel
  */
 function hideStationInfo() {
     const panel = document.getElementById('station-info');
@@ -168,52 +161,80 @@ function hideStationInfo() {
         panel.classList.add('hidden');
         panel.style.display = 'none';
     }
-    console.log('✓ Station info hidden');
 }
 
+// -------- Listener Guard --------
+let listenersSetUp = false;
+
 /**
- * Setup station interaction event listeners
+ * Setup Interaction
  */
-export function setupStationInteraction(renderer, mouse, raycaster, camera, stationMeshes, satelliteMeshes, onSatelliteClick) {
+export function setupStationInteraction(
+    renderer,
+    mouse,
+    raycaster,
+    camera,
+    stationMeshes,
+    satelliteMeshes,
+    onSatelliteClick,
+    onCombinedHover,
+    onSatelliteHover
+) {
+    if (listenersSetUp) return;
+
     renderer.domElement.addEventListener('mousedown', onMouseDown);
-    
+
     renderer.domElement.addEventListener('click', (event) => {
-        onStationClick(event, mouse, raycaster, camera, stationMeshes, satelliteMeshes, onSatelliteClick);
+        onStationClick(
+            event,
+            mouse,
+            raycaster,
+            camera,
+            stationMeshes,
+            satelliteMeshes,
+            onSatelliteClick
+        );
     });
-    
-    renderer.domElement.addEventListener('mousemove', (event) => {
-        onStationHover(event, mouse, raycaster, camera, stationMeshes, renderer);
-    });
-    
-    console.log('✓ Station interaction enabled');
+
+    // Hover handler (using your unified function)
+    if (onCombinedHover && onSatelliteHover) {
+        renderer.domElement.addEventListener('mousemove', (event) => {
+            onCombinedHover(
+                event,
+                mouse,
+                raycaster,
+                camera,
+                stationMeshes,
+                satelliteMeshes,
+                renderer,
+                onSatelliteHover,
+                null
+            );
+        });
+    }
+
+    listenersSetUp = true;
 }
 
 /**
- * Setup info panel close button handler
+ * Info panel close button
  */
 export function setupInfoPanelHandlers() {
     const closeBtn = document.getElementById('close-station-info');
-    if (closeBtn) {
-        closeBtn.addEventListener('click', (event) => {
-            event.stopPropagation();
-            hideStationInfo();
-            
-            if (selectedStation) {
-                selectedStation.material.color.setHex(COLORS.STATION_DEFAULT);
-                selectedStation.material.emissive.setHex(COLORS.STATION_EMISSIVE);
-                selectedStation.material.emissiveIntensity = 0.8;
-                selectedStation.scale.set(1, 1, 1);
-                selectedStation = null;
-            }
-        });
-        console.log('✓ Info panel close button initialized');
-    }
+    if (!closeBtn) return;
+
+    closeBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        hideStationInfo();
+        resetSelection();
+    });
+
+    console.log('✓ Info panel close button initialized');
 }
 
 /**
- * Get selected station
+ * Getter
  */
 export function getSelectedStation() {
     return selectedStation;
 }
-

@@ -1,0 +1,463 @@
+/* ============================================
+   SPACE OPERATIONS THEME
+   Converted from theme-directoins.json
+   ============================================ */
+
+:root {
+    /* ============================================
+       COLOR PALETTE
+       ============================================ */
+    
+    /* Background Colors */
+    --bg-primary: #05070D;
+    --bg-secondary: #0B0F19;
+    --bg-panel: #111726;
+    --bg-starfield: rgba(255, 255, 255, 0.05);
+    
+    /* Text Colors */
+    --text-primary: #E6F3FF;
+    --text-secondary: #9BB3C9;
+    --text-disabled: #5E6A7A;
+    --text-accent: #37F0C6;
+    
+    /* Accent Colors */
+    --accent-satellite: #00E5FF;
+    --accent-ground: #FFB039;
+    --accent-orbit: #37F0C6;
+    --accent-alert: #FF4656;
+    --accent-warning: #EFCB68;
+    --accent-success: #52E38F;
+    
+    /* UI Colors */
+    --ui-border: rgba(255, 255, 255, 0.08);
+    --ui-border-glow: rgba(0, 229, 255, 0.35);
+    --ui-selection: rgba(0, 229, 255, 0.18);
+    --ui-card: rgba(255, 255, 255, 0.04);
+    --ui-hover: rgba(255, 255, 255, 0.06);
+    
+    /* Effect Colors */
+    --effect-glow-satellite: 0px 0px 12px rgba(0, 229, 255, 0.55);
+    --effect-glow-ground: 0px 0px 10px rgba(255, 176, 57, 0.45);
+    
+    /* Satellite Type Colors (from constants.js) */
+    --satellite-leo: #00E5FF;
+    --satellite-meo: #00B8A9;
+    --satellite-geo: #00DC7D;
+    
+    /* Ground Station Colors */
+    --station-default: #FFB039;
+    --station-selected: #4A9EFF;
+    --station-hover: #FFD700;
+    
+    /* Orbital Path Colors */
+    --orbit-hover: #5E6A7A;
+    --orbit-selected: #9BB3C9;
+    
+    
+    /* ============================================
+       TYPOGRAPHY
+       ============================================ */
+    
+    /* Font Families */
+    --font-primary: 'Oxanium', 'Eurostile Extended', sans-serif;
+    --font-secondary: 'Inter', 'Roboto Mono', monospace;
+    
+    /* Font Sizes */
+    --font-size-xs: 0.75rem;      /* 12px */
+    --font-size-sm: 0.875rem;     /* 14px */
+    --font-size-base: 1rem;       /* 16px */
+    --font-size-lg: 1.125rem;     /* 18px */
+    --font-size-xl: 1.25rem;      /* 20px */
+    --font-size-2xl: 1.5rem;      /* 24px */
+    --font-size-3xl: 1.875rem;    /* 30px */
+    --font-size-4xl: 2.25rem;     /* 36px */
+    
+    /* Font Weights */
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Line Heights */
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+    
+    /* Letter Spacing */
+    --letter-spacing-tight: -0.025em;
+    --letter-spacing-normal: 0;
+    --letter-spacing-wide: 0.025em;
+    --letter-spacing-wider: 0.05em;
+    --letter-spacing-widest: 0.1em;
+    
+    
+    /* ============================================
+       SPACING
+       ============================================ */
+    
+    --space-1: 0.25rem;   /* 4px */
+    --space-2: 0.5rem;    /* 8px */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-5: 1.25rem;   /* 20px */
+    --space-6: 1.5rem;    /* 24px */
+    --space-8: 2rem;      /* 32px */
+    --space-10: 2.5rem;   /* 40px */
+    --space-12: 3rem;     /* 48px */
+    --space-16: 4rem;     /* 64px */
+    --space-20: 5rem;     /* 80px */
+    
+    
+    /* ============================================
+       BORDER RADIUS
+       ============================================ */
+    
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+    
+    
+    /* ============================================
+       SHADOWS
+       ============================================ */
+    
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 229, 255, 0.3);
+    
+    
+    /* ============================================
+       Z-INDEX LAYERS
+       ============================================ */
+    
+    --z-base: 0;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-panel: 400;
+    --z-modal-backdrop: 900;
+    --z-modal: 1000;
+    --z-popover: 1100;
+    --z-tooltip: 1200;
+    
+    
+    /* ============================================
+       TRANSITIONS & ANIMATIONS
+       ============================================ */
+    
+    /* Durations */
+    --duration-fast: 150ms;
+    --duration-base: 250ms;
+    --duration-slow: 350ms;
+    --duration-slower: 500ms;
+    
+    /* Easing Functions */
+    --ease-linear: linear;
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Common Transitions */
+    --transition-all: all var(--duration-base) var(--ease-in-out);
+    --transition-colors: color var(--duration-base) var(--ease-in-out),
+                         background-color var(--duration-base) var(--ease-in-out),
+                         border-color var(--duration-base) var(--ease-in-out);
+    --transition-transform: transform var(--duration-base) var(--ease-in-out);
+    --transition-opacity: opacity var(--duration-base) var(--ease-in-out);
+    
+    
+    /* ============================================
+       RESPONSIVE BREAKPOINTS
+       ============================================ */
+    
+    --breakpoint-mobile: 768px;
+    --breakpoint-tablet: 1024px;
+    --breakpoint-desktop: 1280px;
+    --breakpoint-wide: 1920px;
+}
+
+
+/* ============================================
+   ANIMATION KEYFRAMES
+   ============================================ */
+
+/* Pulse Animation (for orbital paths) */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+/* Ping Animation (for ground stations) */
+@keyframes ping {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    75%, 100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* Drift Animation (for starfield) */
+@keyframes drift {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50px);
+    }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Fade Out Animation */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Slide Up Animation */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Slide Down Animation */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Slide Left Animation */
+@keyframes slideLeft {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Slide Right Animation */
+@keyframes slideRight {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Scale In Animation */
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Shimmer Animation (loading states) */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Border Utilities */
+.border {
+    border: 1px solid var(--ui-border);
+}
+
+.border-glow {
+    border: 1px solid var(--ui-border-glow);
+}
+
+/* Card Utilities */
+.card {
+    background: var(--ui-card);
+    border: 1px solid var(--ui-border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(10px);
+}
+
+.card-hover:hover {
+    background: var(--ui-hover);
+}
+
+/* Text Utilities */
+.text-primary {
+    color: var(--text-primary);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+.text-disabled {
+    color: var(--text-disabled);
+}
+
+.text-accent {
+    color: var(--text-accent);
+}
+
+/* Background Utilities */
+.bg-primary {
+    background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+    background-color: var(--bg-secondary);
+}
+
+.bg-panel {
+    background-color: var(--bg-panel);
+}
+
+/* Glow Effects */
+.glow-satellite {
+    box-shadow: var(--effect-glow-satellite);
+}
+
+.glow-ground {
+    box-shadow: var(--effect-glow-ground);
+}
+
+/* Animation Classes */
+.animate-pulse {
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.animate-ping {
+    animation: ping 3s ease-out infinite;
+}
+
+.animate-drift {
+    animation: drift 60s linear infinite;
+}
+
+/* Visibility Utilities */
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+/* Transition Utilities */
+.transition-all {
+    transition: var(--transition-all);
+}
+
+.transition-colors {
+    transition: var(--transition-colors);
+}
+
+.transition-transform {
+    transition: var(--transition-transform);
+}
+
+.transition-opacity {
+    transition: var(--transition-opacity);
+}
+
+/* Backdrop Blur */
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.backdrop-blur-lg {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* Typography Utilities */
+.font-heading {
+    font-family: var(--font-primary);
+    letter-spacing: var(--letter-spacing-widest);
+    text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+}
+
+.font-body {
+    font-family: var(--font-secondary);
+    line-height: var(--line-height-normal);
+    font-weight: var(--font-weight-normal);
+}
+
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+@media (max-width: 768px) {
+    :root {
+        --font-size-base: 0.875rem;
+        --space-4: 0.875rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+

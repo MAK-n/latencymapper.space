@@ -22,10 +22,24 @@ import {
 } from './modules/satelliteUpdater.js';
 import { 
     onSatelliteClick,
+    onSatelliteHover,
     setupSatelliteInteraction,
     setupSatelliteInfoPanelHandlers 
 } from './modules/satelliteInteraction.js';
 import { initOrbitalPath } from './modules/orbitalPath.js';
+import { onCombinedHover } from './modules/combinedInteraction.js';
+
+// UI Control Panel Imports (Phase 1)
+import { initControlPanel, initAllButtons } from './modules/ui/controlPanel.js';
+import { initAddStationModal } from './modules/ui/virtualGroundStation.js';
+import { initAddSatelliteModal } from './modules/ui/customSatellite.js';
+import { initStationListPanel } from './modules/ui/stationList.js';
+import { initSatelliteFinderPanel } from './modules/ui/satelliteFinder.js';
+import { initFilterPanel } from './modules/ui/filterMenu.js';
+import { initSettingsPanel } from './modules/ui/settingsPanel.js';
+import { initGraphicsPanel } from './modules/ui/graphicsPanel.js';
+import { initLegend } from './modules/ui/legend.js';
+import { loadState } from './modules/ui/uiState.js';
 
 // Global Three.js objects
 let scene, camera, renderer;
@@ -60,19 +74,8 @@ async function init() {
     const groundStations = await loadGroundStations();
     if (groundStations.length > 0) {
         renderGroundStations(scene, groundStations);
-        
-        // Setup ground station interaction (will be updated after satellites load)
-        const stationMeshes = getStationMeshes();
-        setupStationInteraction(
-            renderer, 
-            mouse, 
-            raycaster, 
-            camera, 
-            stationMeshes, 
-            [], // Satellite meshes will be added later
-            null // Satellite click handler will be added later
-        );
         setupInfoPanelHandlers();
+        // Don't setup station interaction yet - wait for satellites to load
     }
     
     // Load and initialize satellites
@@ -98,14 +101,15 @@ async function init() {
             // Initialize orbital path module with scene reference
             initOrbitalPath(scene);
             
-            // Get satellite meshes
-            const satelliteMeshes = getSatelliteMeshes();
+            // Get satellite meshes and cache them
+            cachedSatelliteMeshes = getSatelliteMeshes();
+            cachedSatelliteRecords = getSatelliteRecords();
             
             // Setup satellite interaction (Task 1.3.7.1)
-            setupSatelliteInteraction(renderer, mouse, raycaster, camera, satelliteMeshes);
+            setupSatelliteInteraction(renderer, mouse, raycaster, camera, cachedSatelliteMeshes);
             setupSatelliteInfoPanelHandlers();
             
-            // Update ground station interaction to include satellite click handler
+            // Setup ALL interaction (stations + satellites) with combined hover
             const stationMeshes = getStationMeshes();
             setupStationInteraction(
                 renderer,
@@ -113,15 +117,41 @@ async function init() {
                 raycaster,
                 camera,
                 stationMeshes,
-                satelliteMeshes,
-                (event) => onSatelliteClick(event, mouse, raycaster, camera, satelliteMeshes)
+                cachedSatelliteMeshes,
+                (event) => onSatelliteClick(event, mouse, raycaster, camera, cachedSatelliteMeshes),
+                onCombinedHover,
+                onSatelliteHover
             );
-            
-            console.log('✓ Satellite interaction and orbital path system ready');
+            console.log('✓ All interactions ready (stations + satellites)');
         }
     } else {
         console.warn('No satellite data loaded');
     }
+    
+    // Initialize UI Control Panel (Phase 1)
+    console.log('Initializing UI Control Panel...');
+    initControlPanel();
+    initAllButtons();
+    
+    // Initialize all modals and panels
+    initAddStationModal();
+    initAddSatelliteModal();
+    initStationListPanel();
+    initSatelliteFinderPanel();
+    initFilterPanel();
+    initSettingsPanel();
+    initGraphicsPanel();
+    
+    // Initialize legend in settings panel
+    const legendContainer = document.getElementById('legend-container');
+    if (legendContainer) {
+        initLegend(legendContainer);
+    }
+    
+    // Load saved UI state
+    loadState();
+    
+    console.log('✓ UI Control Panel initialized');
     
     // Resize handler
     window.addEventListener('resize', () => onWindowResize(camera, renderer));
@@ -132,18 +162,19 @@ async function init() {
 /**
  * Animation loop
  */
+// Cache meshes and records to avoid function calls every frame
+let cachedSatelliteMeshes = [];
+let cachedSatelliteRecords = [];
+
 function animate() {
     requestAnimationFrame(animate);
     
     // Update controls
     updateControls();
     
-    // Update satellite positions (Task 1.3.6)
-    const satelliteMeshes = getSatelliteMeshes();
-    const satelliteRecords = getSatelliteRecords();
-    
-    if (satelliteMeshes.length > 0 && satelliteRecords.length > 0) {
-        updateSatellitePositions(satelliteMeshes, satelliteRecords);
+    // Update satellite positions (using cached arrays)
+    if (cachedSatelliteMeshes.length > 0 && cachedSatelliteRecords.length > 0) {
+        updateSatellitePositions(cachedSatelliteMeshes, cachedSatelliteRecords);
     }
     
     // Render scene

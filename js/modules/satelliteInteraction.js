@@ -44,8 +44,6 @@ export function onSatelliteClick(event, mouse, raycaster, camera, satelliteMeshe
     if (satelliteIntersects.length > 0) {
         const clickedMesh = satelliteIntersects[0].object;
         
-        console.log('Satellite selected:', clickedMesh.userData.satelliteName);
-        
         // Reset previous selection
         if (selectedSatellite && selectedSatellite !== clickedMesh) {
             resetSatelliteAppearance(selectedSatellite);
@@ -54,19 +52,16 @@ export function onSatelliteClick(event, mouse, raycaster, camera, satelliteMeshe
         // Toggle selection
         if (selectedSatellite === clickedMesh) {
             // Deselect
-            console.log('Deselecting satellite');
             resetSatelliteAppearance(selectedSatellite);
             selectedSatellite = null;
             removeOrbitLine();
             hideSatelliteInfo();
         } else {
             // Select new satellite
-            console.log('Selecting new satellite');
             selectedSatellite = clickedMesh;
             highlightSatellite(selectedSatellite);
             
             // Show orbital path (brighter color for selected)
-            console.log('Showing orbital path for:', clickedMesh.userData.satelliteName);
             showOrbitPath(selectedSatellite, true);
             
             // Display satellite info
@@ -76,48 +71,30 @@ export function onSatelliteClick(event, mouse, raycaster, camera, satelliteMeshe
 }
 
 /**
- * Handle satellite hover
+ * Handle satellite hover (optimized - called from combined handler)
+ * @param {THREE.Mesh|null} hoveredMesh - The mesh being hovered over, or null if no hover
  */
-export function onSatelliteHover(event, mouse, raycaster, camera, satelliteMeshes, renderer) {
-    updateMousePosition(event, mouse, event.target);
-    raycaster.setFromCamera(mouse, camera);
-    
-    const satelliteIntersects = raycaster.intersectObjects(satelliteMeshes);
-    
-    // Reset previous hover if different satellite
-    if (hoveredSatellite && (satelliteIntersects.length === 0 || satelliteIntersects[0].object !== hoveredSatellite)) {
-        // Only reset if not selected
-        if (hoveredSatellite !== selectedSatellite) {
-            resetSatelliteAppearance(hoveredSatellite);
-            removeOrbitLine();
-        }
-        hoveredSatellite = null;
-    }
-    
-    if (satelliteIntersects.length > 0) {
-        const mesh = satelliteIntersects[0].object;
-        
-        // Don't apply hover effect to selected satellite
-        if (mesh !== selectedSatellite) {
-            renderer.domElement.style.cursor = 'pointer';
-            
-            // Scale up and brighten
-            mesh.scale.set(1.3, 1.3, 1.3);
-            mesh.material.emissiveIntensity = 1.2;
-            
-            // Show orbital path (gray)
-            if (mesh !== hoveredSatellite) {
-                showOrbitPath(mesh, false);
+export function onSatelliteHover(hoveredMesh) {
+    if (hoveredMesh) {
+        // Only update if hovering over a different satellite
+        if (hoveredSatellite !== hoveredMesh) {
+            // Remove previous hover orbit
+            if (hoveredSatellite && hoveredSatellite !== selectedSatellite) {
+                removeOrbitLine();
             }
             
-            hoveredSatellite = mesh;
-        } else {
-            renderer.domElement.style.cursor = 'pointer';
+            hoveredSatellite = hoveredMesh;
+            
+            // Show hover orbital path (only if not selected)
+            if (selectedSatellite !== hoveredSatellite) {
+                showOrbitPath(hoveredSatellite, false);
+            }
         }
     } else {
         // Not hovering over any satellite
-        if (!selectedSatellite) {
-            renderer.domElement.style.cursor = 'default';
+        if (hoveredSatellite && hoveredSatellite !== selectedSatellite) {
+            removeOrbitLine();
+            hoveredSatellite = null;
         }
     }
 }
@@ -127,24 +104,26 @@ export function onSatelliteHover(event, mouse, raycaster, camera, satelliteMeshe
  */
 function displaySatelliteInfo(satelliteData) {
     const panel = document.getElementById('satellite-info');
-    if (!panel) {
-        console.error('Satellite info panel not found');
-        return;
-    }
+    if (!panel) return;
     
-    // Update panel content
-    document.getElementById('sat-name').textContent = satelliteData.satelliteName;
-    document.getElementById('sat-orbit-type').textContent = satelliteData.orbitType;
-    document.getElementById('sat-altitude').textContent = satelliteData.altitude.toFixed(2) + ' km';
-    document.getElementById('sat-velocity').textContent = satelliteData.velocity.toFixed(2) + ' km/s';
-    document.getElementById('sat-latitude').textContent = satelliteData.latitude.toFixed(4) + '°';
-    document.getElementById('sat-longitude').textContent = satelliteData.longitude.toFixed(4) + '°';
+    // Update panel content (with null checks)
+    const nameEl = document.getElementById('sat-name');
+    const orbitEl = document.getElementById('sat-orbit-type');
+    const altEl = document.getElementById('sat-altitude');
+    const velEl = document.getElementById('sat-velocity');
+    const latEl = document.getElementById('sat-lat');
+    const lonEl = document.getElementById('sat-lon');
+    
+    if (nameEl) nameEl.textContent = satelliteData.satelliteName;
+    if (orbitEl) orbitEl.textContent = satelliteData.orbitType;
+    if (altEl) altEl.textContent = satelliteData.altitude.toFixed(2) + ' km';
+    if (velEl) velEl.textContent = satelliteData.velocity.toFixed(2) + ' km/s';
+    if (latEl) latEl.textContent = satelliteData.latitude.toFixed(4) + '°';
+    if (lonEl) lonEl.textContent = satelliteData.longitude.toFixed(4) + '°';
     
     // Show panel
     panel.classList.remove('hidden');
     panel.style.display = 'block';
-    
-    console.log('✓ Displaying satellite info for:', satelliteData.satelliteName);
 }
 
 /**
@@ -162,15 +141,11 @@ function hideSatelliteInfo() {
  * Setup satellite interaction event listeners
  */
 export function setupSatelliteInteraction(renderer, mouse, raycaster, camera, satelliteMeshes) {
-    // Add satellite-specific hover handler
-    renderer.domElement.addEventListener('mousemove', (event) => {
-        onSatelliteHover(event, mouse, raycaster, camera, satelliteMeshes, renderer);
-    });
+    // NOTE: Hover handler now combined with station hover for performance
+    // See combinedInteraction.js - single raycasting pass for both
     
     // Click handler is integrated into onStationClick function
     // which checks satellites first before stations
-    
-    console.log('✓ Satellite interaction enabled');
 }
 
 /**
