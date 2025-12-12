@@ -5,6 +5,12 @@
   },
   "scripts": {
     "start": "npx http-server -p 8000",
-    "dev": "npx http-server -p 8000 -o"
+    "dev": "npx http-server -p 8000 -o",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0"
   }
 }
