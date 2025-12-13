@@ -112,8 +112,8 @@ function displaySatelliteInfo(satelliteData) {
     const orbitEl = document.getElementById('sat-orbit-type');
     const altEl = document.getElementById('sat-altitude');
     const velEl = document.getElementById('sat-velocity');
-    const latEl = document.getElementById('sat-lat');
-    const lonEl = document.getElementById('sat-lon');
+    const latEl = document.getElementById('sat-latitude');
+    const lonEl = document.getElementById('sat-longitude');
     
     if (nameEl) nameEl.textContent = satelliteData.satelliteName;
     if (orbitEl) orbitEl.textContent = satelliteData.orbitType;

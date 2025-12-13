@@ -30,9 +30,10 @@ export const CONFIG = {
     },
     
     ORBIT_PERIODS: {
-        LEO: 90,   // minutes
-        MEO: 720,  // minutes
-        GEO: 1440  // minutes
+        //90
+        LEO: 100,   // minutes
+        MEO: 500,  // minutes
+        GEO: 2000  // minutes
     }
 };
 

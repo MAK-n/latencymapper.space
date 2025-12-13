@@ -56,8 +56,13 @@ async function init() {
     camera = sceneObjects.camera;
     renderer = sceneObjects.renderer;
     
-    // Set window.TREE for UI modules that need scene reference
+    // Set window variables for UI modules that need these references
     window.TREE = scene;
+    window.scene = scene;
+    window.camera = camera;
+    window.renderer = renderer;
+    window.mouse = mouse;
+    window.raycaster = raycaster;
     
     // Initialize mouse and raycaster for interaction
     mouse = new THREE.Vector2();
@@ -107,6 +112,9 @@ async function init() {
             cachedSatelliteMeshes = getSatelliteMeshes();
             cachedSatelliteRecords = getSatelliteRecords();
             
+            // Store in window for UI modules
+            window.cachedSatelliteMeshes = cachedSatelliteMeshes;
+            
             // Setup satellite interaction (Task 1.3.7.1)
             setupSatelliteInteraction(renderer, mouse, raycaster, camera, cachedSatelliteMeshes);
             setupSatelliteInfoPanelHandlers();
@@ -120,7 +128,11 @@ async function init() {
                 camera,
                 stationMeshes,
                 cachedSatelliteMeshes,
-                (event) => onSatelliteClick(event, mouse, raycaster, camera, cachedSatelliteMeshes),
+                (event) => {
+                    // Use dynamic satellite meshes
+                    const currentSatelliteMeshes = getSatelliteMeshes();
+                    onSatelliteClick(event, mouse, raycaster, camera, currentSatelliteMeshes);
+                },
                 onCombinedHover,
                 onSatelliteHover
             );
@@ -196,6 +208,13 @@ function animate() {
     
     // Update satellite positions (using cached arrays)
     if (cachedSatelliteMeshes.length > 0 && cachedSatelliteRecords.length > 0) {
+        // Log if arrays are out of sync
+        if (cachedSatelliteMeshes.length !== cachedSatelliteRecords.length) {
+            console.warn('[Main] Array mismatch in animation loop:', {
+                meshes: cachedSatelliteMeshes.length,
+                records: cachedSatelliteRecords.length
+            });
+        }
         updateSatellitePositions(cachedSatelliteMeshes, cachedSatelliteRecords);
     }
     

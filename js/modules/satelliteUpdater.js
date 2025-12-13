@@ -86,11 +86,26 @@ export function propagateAllSatellites(satelliteRecords) {
  * Interpolate satellite positions for smooth animation
  */
 export function interpolateSatellitePositions(satelliteMeshes) {
+    // Log array lengths for debugging
+    if (satelliteMeshes.length !== satelliteTargetPositions.length || 
+        satelliteMeshes.length !== satelliteCurrentPositions.length) {
+        console.warn('[SatelliteUpdater] Array length mismatch!', {
+            meshes: satelliteMeshes.length,
+            targets: satelliteTargetPositions.length,
+            currents: satelliteCurrentPositions.length
+        });
+    }
+    
     satelliteMeshes.forEach((mesh, index) => {
         const target = satelliteTargetPositions[index];
         const current = satelliteCurrentPositions[index];
         
-        if (!target || !current) return;
+        if (!target || !current) {
+            if (index === satelliteMeshes.length - 1) {
+                console.warn(`[SatelliteUpdater] Missing position data for last satellite (index ${index})`);
+            }
+            return;
+        }
         
         // Interpolate lat/lon/alt
         current.latitude += (target.latitude - current.latitude) * CONFIG.INTERPOLATION_SPEED;
@@ -142,5 +157,30 @@ export function getSatelliteTargetPositions() {
  */
 export function getSatelliteCurrentPositions() {
     return satelliteCurrentPositions;
+}
+
+/**
+ * Add a new satellite's position to the updater arrays
+ * Call this when a new satellite is added dynamically
+ */
+export function addSatellitePosition(position) {
+    console.log('[SatelliteUpdater] addSatellitePosition called with:', position);
+    if (position) {
+        satelliteTargetPositions.push(position);
+        satelliteCurrentPositions.push({ ...position });
+        console.log('[SatelliteUpdater] ✓ Added satellite position to updater arrays');
+        console.log('[SatelliteUpdater] Target positions count:', satelliteTargetPositions.length);
+        console.log('[SatelliteUpdater] Current positions count:', satelliteCurrentPositions.length);
+    } else {
+        console.error('[SatelliteUpdater] ERROR: Position is null or undefined!');
+    }
+}
+
+/**
+ * Expose functions to window for debugging
+ */
+if (typeof window !== 'undefined') {
+    window.getSatelliteTargetPositions = getSatelliteTargetPositions;
+    window.getSatelliteCurrentPositions = getSatelliteCurrentPositions;
 }
 

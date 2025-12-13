@@ -281,6 +281,15 @@ export function initAllButtons() {
         'Create Custom Satellite'
     );
     registerButton('add-satellite', 'left', btnAddSatellite);
+
+    // Attach Custom Satellite modal to Add Satellite button
+    btnAddSatellite.disabled = false;
+    import('./customSatellite.js').then(mod => {
+        mod.initAddSatelliteModal();
+        btnAddSatellite.addEventListener('click', () => {
+            mod.showAddSatelliteModal();
+        });
+    });
     
     // 3. List Stations Button
     const btnListStations = createControlButton(
