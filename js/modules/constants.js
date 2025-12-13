@@ -20,7 +20,7 @@ export const CONFIG = {
   TLE_CACHE_DURATION: 3600000, // 1 hour
 
   // Satellite limits
-  MAX_SATELLITES: 50,
+  MAX_SATELLITES: 5000,
 
   // Orbit visualization
   ORBIT_SAMPLES: {
@@ -31,7 +31,7 @@ export const CONFIG = {
 
   ORBIT_PERIODS: {
     //90
-    LEO: 100, // minutes
+    LEO: 150, // minutes
     MEO: 500, // minutes
     GEO: 2000, // minutes
   },
