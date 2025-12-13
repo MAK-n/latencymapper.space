@@ -348,10 +348,36 @@ export function initAllButtons() {
     );
     registerButton('graphics', 'right', btnGraphics);
     
-    console.log('✓ All 7 control panel buttons initialized');
+    // 8. Chaos Mode Button
+    const btnChaosMode = createControlButton(
+        'btn-chaos-mode',
+        'assets/icons/search-icon.svg', // Using search icon as placeholder
+        'Chaos',
+        'Toggle Chaos Mode'
+    );
+    btnChaosMode.style.background = 'linear-gradient(45deg, #ff0000, #ff6600)';
+    btnChaosMode.style.color = '#fff';
+    registerButton('chaos-mode', 'right', btnChaosMode);
+    
+    // Attach Chaos Mode functionality
+    import('../chaosMode.js').then(mod => {
+        btnChaosMode.addEventListener('click', () => {
+            const isActive = mod.toggleChaosMode();
+            // Update button appearance
+            if (isActive) {
+                btnChaosMode.style.background = 'linear-gradient(45deg, #00ff00, #00cc00)';
+                btnChaosMode.classList.add('active');
+            } else {
+                btnChaosMode.style.background = 'linear-gradient(45deg, #ff0000, #ff6600)';
+                btnChaosMode.classList.remove('active');
+            }
+        });
+    });
+    
+    console.log('✓ All 8 control panel buttons initialized');
     console.log('  - Left section: Add Station, Add Satellite, List Stations');
     console.log('  - Center section: Find Satellite, Filters');
-    console.log('  - Right section: Settings, Graphics');
+    console.log('  - Right section: Settings, Graphics, Chaos Mode');
     
     return {
         addStation: btnAddStation,

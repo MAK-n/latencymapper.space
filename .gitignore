@@ -73,3 +73,5 @@ coverage/
 
 *.md
 *.backup
+heatmapReciever/output/*
+env

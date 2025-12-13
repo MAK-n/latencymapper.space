@@ -75,7 +75,8 @@ async function init() {
     await createEarth(scene);
     
     // Setup controls
-    await setupControls(camera, renderer);
+    const controls = await setupControls(camera, renderer);
+    window.controls = controls; // Expose controls globally for chaos mode
     
     // Load and render ground stations
     const groundStations = await loadGroundStations();
@@ -200,25 +201,36 @@ window.addEventListener('activate-globe-click-mode', () => {
 let cachedSatelliteMeshes = [];
 let cachedSatelliteRecords = [];
 
+// Import chaos mode state checker
+let getChaosModeState = null;
+import('./modules/chaosMode.js').then(mod => {
+    getChaosModeState = mod.getChaosModeState;
+});
+
 function animate() {
     requestAnimationFrame(animate);
     
-    // Update controls
-    updateControls();
+    // Check if chaos mode is active
+    const isChaosActive = getChaosModeState ? getChaosModeState() : false;
     
-    // Update satellite positions (using cached arrays)
-    if (cachedSatelliteMeshes.length > 0 && cachedSatelliteRecords.length > 0) {
-        // Log if arrays are out of sync
-        if (cachedSatelliteMeshes.length !== cachedSatelliteRecords.length) {
-            console.warn('[Main] Array mismatch in animation loop:', {
-                meshes: cachedSatelliteMeshes.length,
-                records: cachedSatelliteRecords.length
-            });
+    // Update controls (only if chaos mode is not active, as it handles its own animation)
+    if (!isChaosActive) {
+        updateControls();
+        
+        // Update satellite positions (using cached arrays)
+        if (cachedSatelliteMeshes.length > 0 && cachedSatelliteRecords.length > 0) {
+            // Log if arrays are out of sync
+            if (cachedSatelliteMeshes.length !== cachedSatelliteRecords.length) {
+                console.warn('[Main] Array mismatch in animation loop:', {
+                    meshes: cachedSatelliteMeshes.length,
+                    records: cachedSatelliteRecords.length
+                });
+            }
+            updateSatellitePositions(cachedSatelliteMeshes, cachedSatelliteRecords);
         }
-        updateSatellitePositions(cachedSatelliteMeshes, cachedSatelliteRecords);
     }
     
-    // Render scene
+    // Render scene (chaos mode also renders, but we always render here for consistency)
     renderer.render(scene, camera);
 }
 
