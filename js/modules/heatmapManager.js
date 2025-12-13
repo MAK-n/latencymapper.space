@@ -784,24 +784,84 @@ export function getGenerationStatus() {
 
 /**
  * Navigate to a specific frame index
+ * @param {number} frameIndex - Frame index (1-based from UI, matches WebSocket index)
  */
 export async function navigateToFrame(frameIndex) {
+  // First, try to get from cache (try both 1-based and 0-based)
+  let frameUrl = null;
+  let cacheIndex = frameIndex;
+
   if (frameCache.has(frameIndex)) {
-    const frameUrl = frameCache.get(frameIndex);
+    frameUrl = frameCache.get(frameIndex);
+    cacheIndex = frameIndex;
+  } else if (frameIndex > 0 && frameCache.has(frameIndex - 1)) {
+    // Try 0-based index (in case WebSocket used 0-based)
+    frameUrl = frameCache.get(frameIndex - 1);
+    cacheIndex = frameIndex - 1;
+    console.log(
+      `[HeatmapManager] Found frame ${frameIndex} in cache using 0-based index ${cacheIndex}`,
+    );
+  }
+
+  if (frameUrl) {
     try {
       await updateHeatmapFrame(frameUrl, frameIndex);
       displayedFrame = frameIndex;
-      console.log(`[HeatmapManager] Navigated to frame ${frameIndex}`);
+      console.log(
+        `[HeatmapManager] Navigated to frame ${frameIndex} (from cache, stored as ${cacheIndex})`,
+      );
       return true;
     } catch (error) {
       console.error(
         `[HeatmapManager] Error navigating to frame ${frameIndex}:`,
         error,
       );
+      // Fall through to file system loading
+    }
+  }
+
+  // Frame not in cache - try to load from file system
+  // Frame indices from UI are 1-based (frame 1, frame 2, ...)
+  // Filenames are 0-based (frame_0000.png, frame_0001.png, ...)
+  // So frame 1 → frame_0000.png, frame 2 → frame_0001.png, etc.
+  const fileIndex = frameIndex - 1;
+  const filename = `frame_${String(fileIndex).padStart(4, "0")}.png`;
+  const framePath = `/output/received_frames/${filename}`;
+
+  console.log(
+    `[HeatmapManager] Frame ${frameIndex} not in cache, loading from: ${framePath}`,
+  );
+
+  try {
+    // Try to load the frame from the file system
+    const response = await fetch(framePath);
+    if (!response.ok) {
+      console.warn(
+        `[HeatmapManager] Frame ${frameIndex} not found at ${framePath} (HTTP ${response.status})`,
+      );
       return false;
     }
-  } else {
-    console.warn(`[HeatmapManager] Frame ${frameIndex} not found in cache`);
+
+    // Convert response to blob and create object URL
+    const blob = await response.blob();
+    frameUrl = URL.createObjectURL(blob);
+
+    // Store in cache for future use (store with the UI's 1-based index)
+    frameCache.set(frameIndex, frameUrl);
+
+    // Update the heatmap with the loaded frame
+    await updateHeatmapFrame(frameUrl, frameIndex);
+    displayedFrame = frameIndex;
+
+    console.log(
+      `[HeatmapManager] ✓ Loaded frame ${frameIndex} from file system (${framePath}) and cached`,
+    );
+    return true;
+  } catch (error) {
+    console.error(
+      `[HeatmapManager] Error loading frame ${frameIndex} from file system:`,
+      error,
+    );
     return false;
   }
 }
