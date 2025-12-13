@@ -9,28 +9,28 @@ let panelElement = null;
  * Initialize Graphics panel structure
  */
 export function initGraphicsPanel() {
-    if (panelElement) {
-        console.warn('Graphics panel already initialized');
-        return panelElement;
-    }
-    
-    // Create panel
-    const panel = document.createElement('div');
-    panel.className = 'panel panel-right hidden';
-    panel.id = 'panel-graphics';
-    
-    // Panel Header
-    const header = document.createElement('header');
-    header.className = 'panel-header';
-    header.innerHTML = `
+  if (panelElement) {
+    console.warn("Graphics panel already initialized");
+    return panelElement;
+  }
+
+  // Create panel
+  const panel = document.createElement("div");
+  panel.className = "panel panel-right hidden";
+  panel.id = "panel-graphics";
+
+  // Panel Header
+  const header = document.createElement("header");
+  header.className = "panel-header";
+  header.innerHTML = `
         <h2>Graphics</h2>
         <button class="close-btn" aria-label="Close panel">&times;</button>
     `;
-    
-    // Panel Content
-    const content = document.createElement('div');
-    content.className = 'panel-content';
-    content.innerHTML = `
+
+  // Panel Content
+  const content = document.createElement("div");
+  content.className = "panel-content";
+  content.innerHTML = `
         <!-- Environmental Effects -->
         <section class="panel-section">
             <h3>Environmental Effects</h3>
@@ -116,42 +116,41 @@ export function initGraphicsPanel() {
             </div>
         </section>
     `;
-    
-    // Assemble panel
-    panel.appendChild(header);
-    panel.appendChild(content);
-    
-    // Append to body
-    document.body.appendChild(panel);
-    
-    panelElement = panel;
-    console.log('✓ Graphics panel structure initialized');
-    
-    return panel;
+
+  // Assemble panel
+  panel.appendChild(header);
+  panel.appendChild(content);
+
+  // Append to body
+  document.body.appendChild(panel);
+
+  panelElement = panel;
+  console.log("✓ Graphics panel structure initialized");
+
+  return panel;
 }
 
 /**
  * Show the panel
  */
 export function showGraphicsPanel() {
-    if (panelElement) {
-        panelElement.classList.remove('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.remove("hidden");
+  }
 }
 
 /**
  * Hide the panel
  */
 export function hideGraphicsPanel() {
-    if (panelElement) {
-        panelElement.classList.add('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.add("hidden");
+  }
 }
 
 /**
  * Get panel element
  */
 export function getGraphicsPanel() {
-    return panelElement;
+  return panelElement;
 }
-

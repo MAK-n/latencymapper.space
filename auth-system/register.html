@@ -1,100 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Register</title>
-<style>
-/* SPACE BACKGROUND */
-.space-bg {
-    background: radial-gradient(circle at top, #0a0f2d, #000000);
-    height: 100vh;
-    font-family: "Segoe UI", sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    background-image: url('https://i.imgur.com/4NJlXWR.jpeg');
-    background-size: cover;
-    background-position: center;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <title>Register</title>
+    <style>
+      /* SPACE BACKGROUND */
+      .space-bg {
+        background: radial-gradient(circle at top, #0a0f2d, #000000);
+        height: 100vh;
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background-image: url("https://i.imgur.com/4NJlXWR.jpeg");
+        background-size: cover;
+        background-position: center;
+      }
 
-/* CENTERED CARDS */
-.card {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(12px);
-    padding: 25px;
-    border-radius: 12px;
-    width: 340px;
-    text-align: center;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
-    animation: fadeIn 0.8s ease;
-}
+      /* CENTERED CARDS */
+      .card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(12px);
+        padding: 25px;
+        border-radius: 12px;
+        width: 340px;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+        animation: fadeIn 0.8s ease;
+      }
 
-/* INPUTS */
-input {
-    width: 90%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.15);
-    color: white;
-}
+      /* INPUTS */
+      input {
+        width: 90%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+      }
 
-/* BUTTONS */
-button {
-    width: 95%;
-    padding: 12px;
-    margin-top: 10px;
-    background: linear-gradient(90deg, #0077ff, #00eaff);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s;
-}
+      /* BUTTONS */
+      button {
+        width: 95%;
+        padding: 12px;
+        margin-top: 10px;
+        background: linear-gradient(90deg, #0077ff, #00eaff);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+      }
 
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 12px cyan;
-}
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px cyan;
+      }
 
-/* LINKS */
-a {
-    color: cyan;
-    cursor: pointer;
-}
+      /* LINKS */
+      a {
+        color: cyan;
+        cursor: pointer;
+      }
 
-/* ERROR TEXT */
-.error {
-    color: #ff6060;
-    min-height: 20px;
-}
+      /* ERROR TEXT */
+      .error {
+        color: #ff6060;
+        min-height: 20px;
+      }
 
-/* ANIMATION */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
+      /* ANIMATION */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="space-bg">
+    <div class="card">
+      <h2>Create Account</h2>
+      <div id="registerError" class="error"></div>
 
-</head>
-<body class="space-bg">
+      <input id="regUsername" type="text" placeholder="Username" required />
+      <input id="regEmail" type="email" placeholder="Email" required />
+      <input id="regPassword" type="password" placeholder="Password" required />
 
-<div class="card">
-    <h2>Create Account</h2>
-    <div id="registerError" class="error"></div>
+      <button id="registerBtn">Register</button>
 
-    <input id="regUsername" type="text" placeholder="Username" required />
-    <input id="regEmail" type="email" placeholder="Email" required />
-    <input id="regPassword" type="password" placeholder="Password" required />
+      <p><a href="login.html">Already have an account? Login</a></p>
+    </div>
 
-    <button id="registerBtn">Register</button>
-
-    <p><a href="login.html">Already have an account? Login</a></p>
-</div>
-
-<script src="auth.js"></script>
-</body>
+    <script src="auth.js"></script>
+  </body>
 </html>

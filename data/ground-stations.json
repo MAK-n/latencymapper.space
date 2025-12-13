@@ -36,14 +36,14 @@
       "id": "gs_005",
       "name": "New York Station",
       "lat": 40.7128,
-      "lon": -74.0060,
+      "lon": -74.006,
       "elevation": 60,
       "type": "research"
     },
     {
       "id": "gs_006",
       "name": "Mumbai Station",
-      "lat": 19.0760,
+      "lat": 19.076,
       "lon": 72.8777,
       "elevation": 30,
       "type": "amateur"
@@ -91,8 +91,8 @@
     {
       "id": "gs_012",
       "name": "Berlin Station",
-      "lat": 52.5200,
-      "lon": 13.4050,
+      "lat": 52.52,
+      "lon": 13.405,
       "elevation": 52,
       "type": "amateur"
     },
@@ -148,7 +148,7 @@
       "id": "gs_019",
       "name": "Seoul Station",
       "lat": 37.5665,
-      "lon": 126.9780,
+      "lon": 126.978,
       "elevation": 46,
       "type": "commercial"
     },

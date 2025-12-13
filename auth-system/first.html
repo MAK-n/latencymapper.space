@@ -1,92 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Welcome • Auth System</title>
-<style>
-.space-bg {
-    background:
-        radial-gradient(circle at top, rgba(10,15,45,0.6), rgba(0,0,0,0.9)),
-        url("assets/background.jpg");
-    height: 100vh;
-    font-family: "Segoe UI", sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    background-size: cover;
-    background-position: center;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <title>Welcome • Auth System</title>
+    <style>
+      .space-bg {
+        background:
+          radial-gradient(
+            circle at top,
+            rgba(10, 15, 45, 0.6),
+            rgba(0, 0, 0, 0.9)
+          ),
+          url("assets/background.jpg");
+        height: 100vh;
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background-size: cover;
+        background-position: center;
+      }
 
-.card {
-    background: rgba(255, 255, 255, 0.12);
-    padding: 25px;
-    border-radius: 12px;
-    width: 340px;
-    text-align: center;
-    animation: fadeIn 0.8s ease;
-}
+      .card {
+        background: rgba(255, 255, 255, 0.12);
+        padding: 25px;
+        border-radius: 12px;
+        width: 340px;
+        text-align: center;
+        animation: fadeIn 0.8s ease;
+      }
 
+      /* INPUTS */
+      input {
+        width: 90%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+      }
 
-/* INPUTS */
-input {
-    width: 90%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.15);
-    color: white;
-}
+      /* BUTTONS */
+      button {
+        width: 95%;
+        padding: 12px;
+        margin-top: 10px;
+        background: linear-gradient(90deg, #0077ff, #00eaff);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.3s;
+      }
 
-/* BUTTONS */
-button {
-    width: 95%;
-    padding: 12px;
-    margin-top: 10px;
-    background: linear-gradient(90deg, #0077ff, #00eaff);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s;
-}
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 12px cyan;
+      }
 
-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 12px cyan;
-}
+      /* LINKS */
+      a {
+        color: cyan;
+        cursor: pointer;
+      }
 
-/* LINKS */
-a {
-    color: cyan;
-    cursor: pointer;
-}
+      /* ERROR TEXT */
+      .error {
+        color: #ff6060;
+        min-height: 20px;
+      }
 
-/* ERROR TEXT */
-.error {
-    color: #ff6060;
-    min-height: 20px;
-}
+      /* ANIMATION */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="space-bg">
+    <div class="card">
+      <h1>latencymapper.space :DD</h1>
+      <p>Select your journey</p>
 
-/* ANIMATION */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
-
-</head>
-<body class="space-bg">
-
-<div class="card">
-    <h1>latencymapper.space :DD</h1>
-    <p>Select your journey</p>
-
-    <button onclick="window.location.href='login.html'">I am an Existing User</button>
-    <button onclick="window.location.href='register.html'">I am New Here</button>
-</div>
-
-</body>
+      <button onclick="window.location.href = 'login.html'">
+        I am an Existing User
+      </button>
+      <button onclick="window.location.href = 'register.html'">
+        I am New Here
+      </button>
+    </div>
+  </body>
 </html>

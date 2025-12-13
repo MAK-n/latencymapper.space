@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 /**
  * Convert 3D Vector3 point on the globe to latitude and longitude
  * @param {THREE.Vector3|{x:number,y:number,z:number}} point - 3D point on globe
@@ -6,17 +6,19 @@ import * as THREE from 'three';
  * @returns {{lat: number, lon: number}}
  */
 export function toLatLon(point, radius = CONFIG.EARTH_RADIUS) {
-    // Accept either THREE.Vector3 or plain object
-    const x = point.x, y = point.y, z = point.z;
-    const lat = 90 - (Math.acos(y / radius) * 180 / Math.PI);
-    const lon = ((Math.atan2(z, x) * 180 / Math.PI) - 180);
-    return { lat, lon };
+  // Accept either THREE.Vector3 or plain object
+  const x = point.x,
+    y = point.y,
+    z = point.z;
+  const lat = 90 - (Math.acos(y / radius) * 180) / Math.PI;
+  const lon = (Math.atan2(z, x) * 180) / Math.PI - 180;
+  return { lat, lon };
 }
 // ============================================
 // COORDINATE CONVERSION UTILITIES
 // ============================================
 
-import { CONFIG } from './constants.js';
+import { CONFIG } from "./constants.js";
 
 /**
  * Convert latitude/longitude coordinates to 3D position on sphere
@@ -26,14 +28,14 @@ import { CONFIG } from './constants.js';
  * @returns {THREE.Vector3} 3D position
  */
 export function latLonToVector3(lat, lon, radius = CONFIG.EARTH_RADIUS) {
-    const phi = (90 - lat) * (Math.PI / 180);
-    const theta = (lon + 180) * (Math.PI / 180);
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (lon + 180) * (Math.PI / 180);
 
-    const x = -(radius * Math.sin(phi) * Math.cos(theta));
-    const z = radius * Math.sin(phi) * Math.sin(theta);
-    const y = radius * Math.cos(phi);
+  const x = -(radius * Math.sin(phi) * Math.cos(theta));
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
 
-    return new THREE.Vector3(x, y, z);
+  return new THREE.Vector3(x, y, z);
 }
 
 /**
@@ -44,13 +46,13 @@ export function latLonToVector3(lat, lon, radius = CONFIG.EARTH_RADIUS) {
  * @returns {THREE.Vector3} 3D position scaled to globe
  */
 export function satellitePositionToVector3(latitude, longitude, altitude) {
-    // Convert altitude to globe scale
-    // Scale factor: altitude relative to Earth radius
-    const altitudeScale = altitude / CONFIG.EARTH_RADIUS_KM;
-    const radius = CONFIG.EARTH_RADIUS * (1 + altitudeScale);
-    
-    // Convert to 3D coordinates
-    return latLonToVector3(latitude, longitude, radius);
+  // Convert altitude to globe scale
+  // Scale factor: altitude relative to Earth radius
+  const altitudeScale = altitude / CONFIG.EARTH_RADIUS_KM;
+  const radius = CONFIG.EARTH_RADIUS * (1 + altitudeScale);
+
+  // Convert to 3D coordinates
+  return latLonToVector3(latitude, longitude, radius);
 }
 
 /**
@@ -60,8 +62,7 @@ export function satellitePositionToVector3(latitude, longitude, altitude) {
  * @param {HTMLCanvasElement} canvas - Canvas element
  */
 export function updateMousePosition(event, mouse, canvas) {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 }
-

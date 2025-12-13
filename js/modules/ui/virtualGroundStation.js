@@ -10,35 +10,34 @@ let modalElement = null;
  * Initialize Add Ground Station modal structure
  */
 export function initAddStationModal() {
-    if (modalElement) {
-        console.warn('Add Station modal already initialized');
-        return modalElement;
-    }
-    
+  if (modalElement) {
+    console.warn("Add Station modal already initialized");
+    return modalElement;
+  }
 
-    // Create modal backdrop
-    const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop hidden';
-    backdrop.id = 'modal-add-station-backdrop';
-    
-    // Create modal container
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.id = 'modal-add-station';
-    
-    // Modal Header
-    const header = document.createElement('header');
-    header.className = 'modal-header';
-    header.innerHTML = `
+  // Create modal backdrop
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop hidden";
+  backdrop.id = "modal-add-station-backdrop";
+
+  // Create modal container
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.id = "modal-add-station";
+
+  // Modal Header
+  const header = document.createElement("header");
+  header.className = "modal-header";
+  header.innerHTML = `
         <h2>Add Ground Station</h2>
         <p>Create a virtual ground station on the globe</p>
         <button class="modal-close" aria-label="Close modal">&times;</button>
     `;
-    
-    // Modal Body with Form
-    const body = document.createElement('div');
-    body.className = 'modal-body';
-    body.innerHTML = `
+
+  // Modal Body with Form
+  const body = document.createElement("div");
+  body.className = "modal-body";
+  body.innerHTML = `
         <form id="form-add-station">
             <!-- Basic Information Section -->
             <div class="form-section">
@@ -103,200 +102,215 @@ export function initAddStationModal() {
             </div>
         </form>
     `;
-    
-    // Modal Footer
-    const footer = document.createElement('footer');
-    footer.className = 'modal-footer';
-    footer.innerHTML = `
+
+  // Modal Footer
+  const footer = document.createElement("footer");
+  footer.className = "modal-footer";
+  footer.innerHTML = `
         <button type="button" id="btn-cancel-station" class="btn btn-secondary">Cancel</button>
         <button type="submit" form="form-add-station" class="btn btn-primary" id="btn-create-station">Create Station</button>
     `;
-    
-    // Assemble modal
-    modal.appendChild(header);
-    modal.appendChild(body);
-    modal.appendChild(footer);
-    backdrop.appendChild(modal);
-    
-    // Append to body (hidden by default)
-    backdrop.classList.add('hidden');
-    document.body.appendChild(backdrop);
 
-    // Handle form submission for adding a new ground station
-    // Query form directly from the modal that was just appended
-    const form = modal.querySelector('#form-add-station');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+  // Assemble modal
+  modal.appendChild(header);
+  modal.appendChild(body);
+  modal.appendChild(footer);
+  backdrop.appendChild(modal);
 
-            // Query input elements each submit (ensures up-to-date references)
-            const nameInput = form.querySelector('#station-name');
-            const typeInput = form.querySelector('#station-type');
-            const latInput = form.querySelector('#station-latitude');
-            const lonInput = form.querySelector('#station-longitude');
-            const elevationInput = form.querySelector('#station-elevation');
+  // Append to body (hidden by default)
+  backdrop.classList.add("hidden");
+  document.body.appendChild(backdrop);
 
-            // Check if all inputs exist
-            if (!nameInput || !typeInput || !latInput || !lonInput || !elevationInput) {
-                console.error('Form inputs not found:', {
-                    nameInput: !!nameInput,
-                    typeInput: !!typeInput,
-                    latInput: !!latInput,
-                    lonInput: !!lonInput,
-                    elevationInput: !!elevationInput
-                });
-                alert('Error: Form inputs not properly initialized.');
-                return;
-            }
+  // Handle form submission for adding a new ground station
+  // Query form directly from the modal that was just appended
+  const form = modal.querySelector("#form-add-station");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            const name = nameInput.value;
-            const type = typeInput.value;
-            const latValue = latInput.value;
-            const lonValue = lonInput.value;
-            const elevationValue = elevationInput.value;
+      // Query input elements each submit (ensures up-to-date references)
+      const nameInput = form.querySelector("#station-name");
+      const typeInput = form.querySelector("#station-type");
+      const latInput = form.querySelector("#station-latitude");
+      const lonInput = form.querySelector("#station-longitude");
+      const elevationInput = form.querySelector("#station-elevation");
 
-            if (!name || !type || latValue === '' || lonValue === '' || elevationValue === '') {
-                alert('Please fill all required fields (Name, Type, Latitude, Longitude, Elevation).');
-                return;
-            }
-
-            const lat = parseFloat(latValue);
-            const lon = parseFloat(lonValue);
-            const elevation = parseFloat(elevationValue);
-
-            if (isNaN(lat) || isNaN(lon) || isNaN(elevation)) {
-                alert('Latitude, Longitude, and Elevation must be valid numbers.');
-                return;
-            }
-            // Create new station object
-            const newStation = {
-                id: 'gs_' + Date.now(),
-                name,
-                lat,
-                lon,
-                elevation,
-                type
-            };
-
-            console.log('Creating ground station:', newStation);
-
-            try {
-                window.dispatchEvent(new CustomEvent('add-ground-station', { detail: newStation }));
-                
-                addGroundStation(newStation);
-                renderGroundStations(window.TREE, [newStation]);
-
-                // Close modal
-                backdrop.classList.add('hidden');
-                form.reset();
-                console.log('Ground station added!');
-            } catch (err) {
-                alert('Failed to add ground station: ' + err.message);
-            }
+      // Check if all inputs exist
+      if (
+        !nameInput ||
+        !typeInput ||
+        !latInput ||
+        !lonInput ||
+        !elevationInput
+      ) {
+        console.error("Form inputs not found:", {
+          nameInput: !!nameInput,
+          typeInput: !!typeInput,
+          latInput: !!latInput,
+          lonInput: !!lonInput,
+          elevationInput: !!elevationInput,
         });
+        alert("Error: Form inputs not properly initialized.");
+        return;
+      }
+
+      const name = nameInput.value;
+      const type = typeInput.value;
+      const latValue = latInput.value;
+      const lonValue = lonInput.value;
+      const elevationValue = elevationInput.value;
+
+      if (
+        !name ||
+        !type ||
+        latValue === "" ||
+        lonValue === "" ||
+        elevationValue === ""
+      ) {
+        alert(
+          "Please fill all required fields (Name, Type, Latitude, Longitude, Elevation).",
+        );
+        return;
+      }
+
+      const lat = parseFloat(latValue);
+      const lon = parseFloat(lonValue);
+      const elevation = parseFloat(elevationValue);
+
+      if (isNaN(lat) || isNaN(lon) || isNaN(elevation)) {
+        alert("Latitude, Longitude, and Elevation must be valid numbers.");
+        return;
+      }
+      // Create new station object
+      const newStation = {
+        id: "gs_" + Date.now(),
+        name,
+        lat,
+        lon,
+        elevation,
+        type,
+      };
+
+      console.log("Creating ground station:", newStation);
+
+      try {
+        window.dispatchEvent(
+          new CustomEvent("add-ground-station", { detail: newStation }),
+        );
+
+        addGroundStation(newStation);
+        renderGroundStations(window.TREE, [newStation]);
+
+        // Close modal
+        backdrop.classList.add("hidden");
+        form.reset();
+        console.log("Ground station added!");
+      } catch (err) {
+        alert("Failed to add ground station: " + err.message);
+      }
+    });
+  } else {
+    console.error("Form #form-add-station not found in modal");
+  }
+
+  // Create form elements
+  const closeButton = modal.querySelector(".modal-close");
+  if (closeButton) {
+    closeButton.addEventListener("click", () => {
+      backdrop.classList.add("hidden");
+      form.reset();
+    });
+  }
+
+  // Cancel button in footer
+  const cancelButton = document.getElementById("btn-cancel-station");
+  if (cancelButton && form) {
+    cancelButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      backdrop.classList.add("hidden");
+      form.reset();
+    });
+  }
+
+  // Listen for globe location selection and populate form fields
+  window.addEventListener("station-location-selected", (e) => {
+    const { lat, lon } = e.detail;
+    const latInput = document.getElementById("station-latitude");
+    const lonInput = document.getElementById("station-longitude");
+    if (latInput && lonInput) {
+      latInput.value = lat.toFixed(5);
+      lonInput.value = lon.toFixed(5);
+      // Visual confirmation: highlight fields
+      latInput.classList.add("field-confirmed");
+      lonInput.classList.add("field-confirmed");
+      setTimeout(() => {
+        latInput.classList.remove("field-confirmed");
+        lonInput.classList.remove("field-confirmed");
+      }, 1200);
+    }
+    // Show the modal after selection
+    backdrop.classList.remove("hidden");
+  });
+
+  // Debug: log when Click on Globe button is bound
+  setTimeout(() => {
+    const clickBtn = document.getElementById("btn-click-on-globe");
+    if (clickBtn) {
+      console.log("[AddStation] Click on Globe button found, binding event");
+      clickBtn.addEventListener("click", () => {
+        console.log("[AddStation] Click on Globe button clicked");
+        // Hide modal while selecting
+        backdrop.classList.add("hidden");
+        // Dispatch event to activate globe click mode
+        window.dispatchEvent(new CustomEvent("activate-globe-click-mode"));
+      });
     } else {
-        console.error('Form #form-add-station not found in modal');
+      console.warn("[AddStation] Click on Globe button NOT found");
     }
+  }, 500);
 
-    // Create form elements
-    const closeButton = modal.querySelector('.modal-close');
-    if (closeButton) {
-        closeButton.addEventListener('click', () => {
-            backdrop.classList.add('hidden');
-            form.reset();
-        });
+  // Listen for custom event to show modal after globe selection
+  window.addEventListener("show-add-station-modal", () => {
+    backdrop.classList.remove("hidden");
+  });
+
+  // Listen for esc key to hide modal
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      backdrop.classList.add("hidden");
     }
+  });
 
-    // Cancel button in footer
-    const cancelButton = document.getElementById('btn-cancel-station');
-    if (cancelButton && form) {
-        cancelButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            backdrop.classList.add('hidden');
-            form.reset();
-        });
-    }
+  // Hide modal initially
+  backdrop.classList.add("hidden");
 
+  modalElement = backdrop;
+  console.log("✓ Add Ground Station modal structure initialized");
 
-    // Listen for globe location selection and populate form fields
-    window.addEventListener('station-location-selected', (e) => {
-        const { lat, lon } = e.detail;
-        const latInput = document.getElementById('station-latitude');
-        const lonInput = document.getElementById('station-longitude');
-        if (latInput && lonInput) {
-            latInput.value = lat.toFixed(5);
-            lonInput.value = lon.toFixed(5);
-            // Visual confirmation: highlight fields
-            latInput.classList.add('field-confirmed');
-            lonInput.classList.add('field-confirmed');
-            setTimeout(() => {
-                latInput.classList.remove('field-confirmed');
-                lonInput.classList.remove('field-confirmed');
-            }, 1200);
-        }
-        // Show the modal after selection
-        backdrop.classList.remove('hidden');
-    });
-
-    // Debug: log when Click on Globe button is bound
-    setTimeout(() => {
-        const clickBtn = document.getElementById('btn-click-on-globe');
-        if (clickBtn) {
-            console.log('[AddStation] Click on Globe button found, binding event');
-            clickBtn.addEventListener('click', () => {
-                console.log('[AddStation] Click on Globe button clicked');
-                // Hide modal while selecting
-                backdrop.classList.add('hidden');
-                // Dispatch event to activate globe click mode
-                window.dispatchEvent(new CustomEvent('activate-globe-click-mode'));
-            });
-        } else {
-            console.warn('[AddStation] Click on Globe button NOT found');
-        }
-    }, 500);
-
-    // Listen for custom event to show modal after globe selection
-    window.addEventListener('show-add-station-modal', () => {
-        backdrop.classList.remove('hidden');
-    });
-
-    // Listen for esc key to hide modal
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            backdrop.classList.add('hidden');
-        }
-    });
-
-    // Hide modal initially
-    backdrop.classList.add('hidden');
-    
-    modalElement = backdrop;
-    console.log('✓ Add Ground Station modal structure initialized');
-    
-    return backdrop;
+  return backdrop;
 }
 
 /**
  * Show the modal
  */
 export function showAddStationModal() {
-    if (modalElement) {
-        modalElement.classList.remove('hidden');
-    }
+  if (modalElement) {
+    modalElement.classList.remove("hidden");
+  }
 }
 
 /**
  * Hide the modal
  */
 function hideAddStationModal() {
-    if (modalElement) {
-        modalElement.classList.add('hidden');
-    }
+  if (modalElement) {
+    modalElement.classList.add("hidden");
+  }
 }
 
 /**
  * Get modal element
  */
 function getAddStationModal() {
-    return modalElement;
+  return modalElement;
 }

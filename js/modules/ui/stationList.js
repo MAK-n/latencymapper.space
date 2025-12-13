@@ -232,28 +232,28 @@ function exportStationsList() {
  * Initialize Station List panel structure
  */
 export function initStationListPanel() {
-    if (panelElement) {
-        console.warn('Station List panel already initialized');
-        return panelElement;
-    }
-    
-    // Create panel
-    const panel = document.createElement('div');
-    panel.className = 'panel panel-left hidden';
-    panel.id = 'panel-station-list';
-    
-    // Panel Header
-    const header = document.createElement('header');
-    header.className = 'panel-header';
-    header.innerHTML = `
+  if (panelElement) {
+    console.warn("Station List panel already initialized");
+    return panelElement;
+  }
+
+  // Create panel
+  const panel = document.createElement("div");
+  panel.className = "panel panel-left hidden";
+  panel.id = "panel-station-list";
+
+  // Panel Header
+  const header = document.createElement("header");
+  header.className = "panel-header";
+  header.innerHTML = `
         <h2>Ground Stations</h2>
         <button class="close-btn" aria-label="Close panel">&times;</button>
     `;
-    
-    // Panel Toolbar
-    const toolbar = document.createElement('div');
-    toolbar.className = 'panel-toolbar';
-    toolbar.innerHTML = `
+
+  // Panel Toolbar
+  const toolbar = document.createElement("div");
+  toolbar.className = "panel-toolbar";
+  toolbar.innerHTML = `
         <input type="search" id="station-search" placeholder="Search stations..." aria-label="Search ground stations">
         <select id="station-sort" class="form-select" style="width: auto; min-width: 120px;">
             <option value="name-asc">Name A-Z</option>
@@ -262,11 +262,11 @@ export function initStationListPanel() {
             <option value="lat">By Latitude</option>
         </select>
     `;
-    
-    // Panel Content
-    const content = document.createElement('div');
-    content.className = 'panel-content';
-    content.innerHTML = `
+
+  // Panel Content
+  const content = document.createElement("div");
+  content.className = "panel-content";
+  content.innerHTML = `
         <div style="margin-bottom: var(--space-4); padding: var(--space-2) var(--space-3); background: var(--bg-secondary); border-radius: var(--radius-md); font-size: var(--font-size-sm); color: var(--text-secondary);" id="station-count">0 stations</div>
         <ul class="panel-list" id="station-list">
             <!-- Station list items will be populated here -->
@@ -276,30 +276,30 @@ export function initStationListPanel() {
             <p class="panel-empty-text">No ground stations found</p>
         </div>
     `;
-    
-    // Panel Footer
-    const footer = document.createElement('footer');
-    footer.className = 'panel-footer';
-    footer.innerHTML = `
+
+  // Panel Footer
+  const footer = document.createElement("footer");
+  footer.className = "panel-footer";
+  footer.innerHTML = `
         <button id="btn-export-stations" class="btn btn-secondary btn-sm">Export List</button>
     `;
-    
-    // Assemble panel
-    panel.appendChild(header);
-    panel.appendChild(toolbar);
-    panel.appendChild(content);
-    panel.appendChild(footer);
-    
-    // Append to body
-    document.body.appendChild(panel);
-    
-    // Setup event listeners
-    setupEventListeners(panel);
-    
-    panelElement = panel;
-    console.log('✓ Station List panel structure initialized');
-    
-    return panel;
+
+  // Assemble panel
+  panel.appendChild(header);
+  panel.appendChild(toolbar);
+  panel.appendChild(content);
+  panel.appendChild(footer);
+
+  // Append to body
+  document.body.appendChild(panel);
+
+  // Setup event listeners
+  setupEventListeners(panel);
+
+  panelElement = panel;
+  console.log("✓ Station List panel structure initialized");
+
+  return panel;
 }
 
 /**
@@ -371,35 +371,34 @@ function setupEventListeners(panel) {
  * Show the panel
  */
 export function showStationListPanel() {
-    if (panelElement) {
-        panelElement.classList.remove('hidden');
-        // Refresh the list when showing
-        renderStationList();
-    }
+  if (panelElement) {
+    panelElement.classList.remove("hidden");
+    // Refresh the list when showing
+    renderStationList();
+  }
 }
 
 /**
  * Hide the panel
  */
 export function hideStationListPanel() {
-    if (panelElement) {
-        panelElement.classList.add('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.add("hidden");
+  }
 }
 
 /**
  * Get panel element
  */
 export function getStationListPanel() {
-    return panelElement;
+  return panelElement;
 }
 
 /**
  * Refresh the station list (useful when stations are added/removed)
  */
 export function refreshStationList() {
-    if (panelElement && !panelElement.classList.contains('hidden')) {
-        renderStationList();
-    }
+  if (panelElement && !panelElement.classList.contains("hidden")) {
+    renderStationList();
+  }
 }
-

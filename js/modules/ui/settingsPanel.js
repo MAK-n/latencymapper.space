@@ -9,28 +9,28 @@ let panelElement = null;
  * Initialize Settings panel structure
  */
 export function initSettingsPanel() {
-    if (panelElement) {
-        console.warn('Settings panel already initialized');
-        return panelElement;
-    }
-    
-    // Create panel
-    const panel = document.createElement('div');
-    panel.className = 'panel panel-right hidden';
-    panel.id = 'panel-settings';
-    
-    // Panel Header
-    const header = document.createElement('header');
-    header.className = 'panel-header';
-    header.innerHTML = `
+  if (panelElement) {
+    console.warn("Settings panel already initialized");
+    return panelElement;
+  }
+
+  // Create panel
+  const panel = document.createElement("div");
+  panel.className = "panel panel-right hidden";
+  panel.id = "panel-settings";
+
+  // Panel Header
+  const header = document.createElement("header");
+  header.className = "panel-header";
+  header.innerHTML = `
         <h2>Settings</h2>
         <button class="close-btn" aria-label="Close panel">&times;</button>
     `;
-    
-    // Panel Content
-    const content = document.createElement('div');
-    content.className = 'panel-content';
-    content.innerHTML = `
+
+  // Panel Content
+  const content = document.createElement("div");
+  content.className = "panel-content";
+  content.innerHTML = `
         <!-- Display Settings -->
         <section class="panel-section">
             <h3>Display Settings</h3>
@@ -118,42 +118,41 @@ export function initSettingsPanel() {
             <button id="btn-export-settings" class="btn btn-secondary btn-sm">Export Settings</button>
         </div>
     `;
-    
-    // Assemble panel
-    panel.appendChild(header);
-    panel.appendChild(content);
-    
-    // Append to body
-    document.body.appendChild(panel);
-    
-    panelElement = panel;
-    console.log('✓ Settings panel structure initialized');
-    
-    return panel;
+
+  // Assemble panel
+  panel.appendChild(header);
+  panel.appendChild(content);
+
+  // Append to body
+  document.body.appendChild(panel);
+
+  panelElement = panel;
+  console.log("✓ Settings panel structure initialized");
+
+  return panel;
 }
 
 /**
  * Show the panel
  */
 export function showSettingsPanel() {
-    if (panelElement) {
-        panelElement.classList.remove('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.remove("hidden");
+  }
 }
 
 /**
  * Hide the panel
  */
 export function hideSettingsPanel() {
-    if (panelElement) {
-        panelElement.classList.add('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.add("hidden");
+  }
 }
 
 /**
  * Get panel element
  */
 export function getSettingsPanel() {
-    return panelElement;
+  return panelElement;
 }
-

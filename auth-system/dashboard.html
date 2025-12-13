@@ -1,19 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<title>Dashboard</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body class="space-bg">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="space-bg">
+    <div class="card">
+      <h2>Welcome, <span id="userName"></span></h2>
+      <p>Email: <span id="userEmail"></span></p>
 
-<div class="card">
-    <h2>Welcome, <span id="userName"></span></h2>
-    <p>Email: <span id="userEmail"></span></p>
+      <button id="logoutBtn">Logout</button>
+    </div>
 
-    <button id="logoutBtn">Logout</button>
-</div>
-
-<script src="auth.js"></script>
-</body>
+    <script src="auth.js"></script>
+  </body>
 </html>

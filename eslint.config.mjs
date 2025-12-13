@@ -6,12 +6,7 @@ import prettierConfig from "eslint-config-prettier";
 export default defineConfig([
   // Global ignores
   {
-    ignores: [
-      "node_modules/**",
-      "dist/**",
-      "build/**",
-      "coverage/**"
-    ],
+    ignores: ["node_modules/**", "dist/**", "build/**", "coverage/**"],
   },
 
   // JS + Prettier rules
@@ -31,10 +26,10 @@ export default defineConfig([
       "no-undef": "error",
 
       // Prettier as ESLint rule
-      "prettier/prettier": "warn"
+      "prettier/prettier": "warn",
     },
   },
 
   // Disable ESLint formatting rules that conflict with Prettier
-  prettierConfig
+  prettierConfig,
 ]);

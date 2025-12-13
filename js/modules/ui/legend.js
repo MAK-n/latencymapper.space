@@ -8,14 +8,14 @@
  * @param {HTMLElement} container - Container element to insert legend into
  */
 export function initLegend(container) {
-    if (!container) {
-        console.error('Legend container not provided');
-        return null;
-    }
-    
-    const legend = document.createElement('div');
-    legend.className = 'legend-component';
-    legend.innerHTML = `
+  if (!container) {
+    console.error("Legend container not provided");
+    return null;
+  }
+
+  const legend = document.createElement("div");
+  legend.className = "legend-component";
+  legend.innerHTML = `
         <div class="legend-items" style="display: flex; flex-direction: column; gap: var(--space-2);">
             <!-- Satellites -->
             <div class="legend-item" style="display: flex; align-items: center; gap: var(--space-3);">
@@ -56,18 +56,17 @@ export function initLegend(container) {
             </div>
         </div>
     `;
-    
-    container.appendChild(legend);
-    console.log('✓ Legend component initialized');
-    
-    return legend;
+
+  container.appendChild(legend);
+  console.log("✓ Legend component initialized");
+
+  return legend;
 }
 
 /**
  * Update legend (if colors change dynamically)
  */
 export function updateLegend() {
-    // Placeholder for dynamic legend updates
-    console.log('Legend update requested');
+  // Placeholder for dynamic legend updates
+  console.log("Legend update requested");
 }
-

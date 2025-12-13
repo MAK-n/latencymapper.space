@@ -1,11 +1,15 @@
 {
   "dependencies": {
-    "satellite.js": "^6.0.1",
-    "three": "^0.182.0"
+    "cors": "^2.8.5",
+    "express": "^4.22.1",
+    "node-fetch": "^2.7.0",
+    "ws": "^8.14.2"
   },
   "scripts": {
-    "start": "npx http-server -p 1234",
-    "dev": "npx http-server -p 1234 -o",
+    "start": "node server.js",
+    "dev": "node server.js",
+    "server": "node server.js",
+    "server:dev": "node server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."

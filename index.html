@@ -1,280 +1,301 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Satellite Latency Map - 3D Globe</title>
-    
-    <!-- Google Fonts - Space Operations Theme -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- UI Control Panel Styles (Phase 1) -->
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/controlPanel.css">
-    <link rel="stylesheet" href="css/modals.css">
-    <link rel="stylesheet" href="css/panels.css">
-    
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Inter', 'Roboto Mono', monospace;
-            background: #05070D;
-        }
-        
-        #canvas-container {
-            width: 100vw;
-            height: 100vh;
-            background: #05070D;
-            position: relative;
-        }
 
-        /* Info Panel Styles - Space Operations Theme */
-        .info-panel {
-            position: fixed;
-            background: rgba(17, 23, 38, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 
-                0px 0px 12px rgba(0, 229, 255, 0.35),
-                0 8px 32px rgba(0, 0, 0, 0.6);
-            border-radius: 8px;
-            padding: 24px;
-            min-width: 300px;
-            max-width: 340px;
-            color: #E6F3FF;
-            font-family: 'Inter', 'Roboto Mono', monospace;
-            z-index: 1000;
-            backdrop-filter: blur(12px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        
-        .info-panel.hidden {
-            display: none;
-        }
-        
-        /* Ground Station Panel - Top Right */
-        #station-info {
-            top: 20px;
-            right: 20px;
-        }
-        
-        /* Satellite Panel - Top Left */
-        #satellite-info {
-            top: 20px;
-            left: 20px;
-        }
-        
-        .info-panel h3 {
-            margin: 0 0 18px 0;
-            color: #00E5FF;
-            font-family: 'Oxanium', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding-right: 35px;
-            text-shadow: 0px 0px 8px rgba(0, 229, 255, 0.4);
-        }
-        
-        /* Ground station panel - orange accent */
-        #station-info h3 {
-            color: #FFB039;
-            text-shadow: 0px 0px 8px rgba(255, 176, 57, 0.4);
-        }
-        
-        .info-row {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        
-        .info-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .info-row .label {
-            color: #9BB3C9;
-            margin-right: 15px;
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-        }
-        
-        .info-row .value {
-            color: #E6F3FF;
-            font-size: 14px;
-            text-align: right;
-            font-weight: 500;
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 4px;
-            color: #9BB3C9;
-            font-size: 22px;
-            cursor: pointer;
-            padding: 0;
-            width: 28px;
-            height: 28px;
-            line-height: 26px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .close-btn:hover {
-            background: rgba(255, 70, 86, 0.15);
-            border-color: #FF4656;
-            color: #FF4656;
-            transform: rotate(90deg);
-            box-shadow: 0 0 8px rgba(255, 70, 86, 0.3);
-        }
-        
-        /* Starfield effect */
-        #canvas-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.05), transparent),
-                radial-gradient(2px 2px at 60% 70%, rgba(255, 255, 255, 0.05), transparent),
-                radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.05), transparent),
-                radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.05), transparent);
-            background-size: 200% 200%;
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        canvas {
-            position: relative;
-            z-index: 2;
-        }
+    <!-- Google Fonts - Space Operations Theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- UI Control Panel Styles (Phase 1) -->
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/controlPanel.css" />
+    <link rel="stylesheet" href="css/modals.css" />
+    <link rel="stylesheet" href="css/panels.css" />
+
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: "Inter", "Roboto Mono", monospace;
+        background: #05070d;
+      }
+
+      #canvas-container {
+        width: 100vw;
+        height: 100vh;
+        background: #05070d;
+        position: relative;
+      }
+
+      /* Info Panel Styles - Space Operations Theme */
+      .info-panel {
+        position: fixed;
+        background: rgba(17, 23, 38, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow:
+          0px 0px 12px rgba(0, 229, 255, 0.35),
+          0 8px 32px rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+        padding: 24px;
+        min-width: 300px;
+        max-width: 340px;
+        color: #e6f3ff;
+        font-family: "Inter", "Roboto Mono", monospace;
+        z-index: 1000;
+        backdrop-filter: blur(12px);
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+
+      .info-panel.hidden {
+        display: none;
+      }
+
+      /* Ground Station Panel - Top Right */
+      #station-info {
+        top: 20px;
+        right: 20px;
+      }
+
+      /* Satellite Panel - Top Left */
+      #satellite-info {
+        top: 20px;
+        left: 20px;
+      }
+
+      .info-panel h3 {
+        margin: 0 0 18px 0;
+        color: #00e5ff;
+        font-family: "Oxanium", sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding-right: 35px;
+        text-shadow: 0px 0px 8px rgba(0, 229, 255, 0.4);
+      }
+
+      /* Ground station panel - orange accent */
+      #station-info h3 {
+        color: #ffb039;
+        text-shadow: 0px 0px 8px rgba(255, 176, 57, 0.4);
+      }
+
+      .info-row {
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .info-row .label {
+        color: #9bb3c9;
+        margin-right: 15px;
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+
+      .info-row .value {
+        color: #e6f3ff;
+        font-size: 14px;
+        text-align: right;
+        font-weight: 500;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 4px;
+        color: #9bb3c9;
+        font-size: 22px;
+        cursor: pointer;
+        padding: 0;
+        width: 28px;
+        height: 28px;
+        line-height: 26px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+        background: rgba(255, 70, 86, 0.15);
+        border-color: #ff4656;
+        color: #ff4656;
+        transform: rotate(90deg);
+        box-shadow: 0 0 8px rgba(255, 70, 86, 0.3);
+      }
+
+      /* Starfield effect */
+      #canvas-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          radial-gradient(
+            2px 2px at 20% 30%,
+            rgba(255, 255, 255, 0.05),
+            transparent
+          ),
+          radial-gradient(
+            2px 2px at 60% 70%,
+            rgba(255, 255, 255, 0.05),
+            transparent
+          ),
+          radial-gradient(
+            1px 1px at 50% 50%,
+            rgba(255, 255, 255, 0.05),
+            transparent
+          ),
+          radial-gradient(
+            1px 1px at 80% 10%,
+            rgba(255, 255, 255, 0.05),
+            transparent
+          );
+        background-size: 200% 200%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      canvas {
+        position: relative;
+        z-index: 2;
+      }
     </style>
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="assets/favicon.png ">
-    
+    <link rel="icon" type="image/png" href="assets/favicon.png " />
+
     <!-- Import map for ES modules -->
     <script type="importmap">
-    {
+      {
         "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
-            "satellite.js": "https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.es.js"
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+          "satellite.js": "https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.es.js"
         }
-    }
+      }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="canvas-container"></div>
-    
+
     <!-- Ground Station Info Panel (Task 1.2.7) -->
     <div id="station-info" class="info-panel hidden">
-        <button id="close-station-info" class="close-btn">&times;</button>
-        <h3 id="station-name">Station Name</h3>
-        <div class="info-row">
-            <span class="label">Type:</span>
-            <span id="station-type" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Latitude:</span>
-            <span id="station-lat" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Longitude:</span>
-            <span id="station-lon" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Elevation:</span>
-            <span id="station-elevation" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">ID:</span>
-            <span id="station-id" class="value">-</span>
-        </div>
+      <button id="close-station-info" class="close-btn">&times;</button>
+      <h3 id="station-name">Station Name</h3>
+      <div class="info-row">
+        <span class="label">Type:</span>
+        <span id="station-type" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Latitude:</span>
+        <span id="station-lat" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Longitude:</span>
+        <span id="station-lon" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Elevation:</span>
+        <span id="station-elevation" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">ID:</span>
+        <span id="station-id" class="value">-</span>
+      </div>
     </div>
-    
+
     <!-- Satellite Info Panel (Task 1.3.7.6) -->
     <div id="satellite-info" class="info-panel hidden">
-        <button id="close-satellite-info" class="close-btn">&times;</button>
-        <h3 id="sat-name">Satellite Name</h3>
-        <div class="info-row">
-            <span class="label">Orbit Type:</span>
-            <span id="sat-orbit-type" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Altitude:</span>
-            <span id="sat-altitude" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Velocity:</span>
-            <span id="sat-velocity" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Latitude:</span>
-            <span id="sat-latitude" class="value">-</span>
-        </div>
-        <div class="info-row">
-            <span class="label">Longitude:</span>
-            <span id="sat-longitude" class="value">-</span>
-        </div>
+      <button id="close-satellite-info" class="close-btn">&times;</button>
+      <h3 id="sat-name">Satellite Name</h3>
+      <div class="info-row">
+        <span class="label">Orbit Type:</span>
+        <span id="sat-orbit-type" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Altitude:</span>
+        <span id="sat-altitude" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Velocity:</span>
+        <span id="sat-velocity" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Latitude:</span>
+        <span id="sat-latitude" class="value">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Longitude:</span>
+        <span id="sat-longitude" class="value">-</span>
+      </div>
     </div>
-    
+
     <!-- Three.js Library -->
     <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-            }
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
         }
+      }
     </script>
-    
+
     <!-- satellite.js Library for SGP4 propagation -->
     <script src="https://cdn.jsdelivr.net/npm/satellite.js@6.0.1/dist/satellite.min.js"></script>
-    
+
     <!-- Load Three.js and OrbitControls globally (before other scripts) -->
     <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        
-        // Expose THREE and OrbitControls globally
-        window.THREE = THREE;
-        window.OrbitControls = OrbitControls;
-        
-        // Also expose satellite.js when it loads
-        window.addEventListener('DOMContentLoaded', () => {
-            if (typeof satellite !== 'undefined') {
-                window.satellite = satellite;
-                console.log('✓ satellite.js loaded and exposed globally');
-            } else {
-                console.error('satellite.js failed to load');
-            }
-        });
-        
-        console.log('✓ THREE.js and OrbitControls loaded globally');
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      // Expose THREE and OrbitControls globally
+      window.THREE = THREE;
+      window.OrbitControls = OrbitControls;
+
+      // Also expose satellite.js when it loads
+      window.addEventListener("DOMContentLoaded", () => {
+        if (typeof satellite !== "undefined") {
+          window.satellite = satellite;
+          console.log("✓ satellite.js loaded and exposed globally");
+        } else {
+          console.error("satellite.js failed to load");
+        }
+      });
+
+      console.log("✓ THREE.js and OrbitControls loaded globally");
     </script>
-    
+
     <!-- Main Application Script (ES Module) -->
     <script type="module" src="js/main.js"></script>
-</body>
+  </body>
 </html>

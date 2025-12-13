@@ -9,28 +9,28 @@ let panelElement = null;
  * Initialize Filter Menu panel structure
  */
 export function initFilterPanel() {
-    if (panelElement) {
-        console.warn('Filter panel already initialized');
-        return panelElement;
-    }
-    
-    // Create panel
-    const panel = document.createElement('div');
-    panel.className = 'panel panel-top hidden';
-    panel.id = 'panel-filters';
-    
-    // Panel Header
-    const header = document.createElement('header');
-    header.className = 'panel-header';
-    header.innerHTML = `
+  if (panelElement) {
+    console.warn("Filter panel already initialized");
+    return panelElement;
+  }
+
+  // Create panel
+  const panel = document.createElement("div");
+  panel.className = "panel panel-top hidden";
+  panel.id = "panel-filters";
+
+  // Panel Header
+  const header = document.createElement("header");
+  header.className = "panel-header";
+  header.innerHTML = `
         <h2>Filters</h2>
         <button class="close-btn" aria-label="Close panel">&times;</button>
     `;
-    
-    // Panel Content
-    const content = document.createElement('div');
-    content.className = 'panel-content';
-    content.innerHTML = `
+
+  // Panel Content
+  const content = document.createElement("div");
+  content.className = "panel-content";
+  content.innerHTML = `
         <!-- Satellite Type Filters -->
         <section class="panel-section">
             <h3>Satellite Types</h3>
@@ -87,42 +87,41 @@ export function initFilterPanel() {
             <button id="btn-reset-filters" class="btn btn-secondary btn-sm">Reset Filters</button>
         </div>
     `;
-    
-    // Assemble panel
-    panel.appendChild(header);
-    panel.appendChild(content);
-    
-    // Append to body
-    document.body.appendChild(panel);
-    
-    panelElement = panel;
-    console.log('✓ Filter Menu panel structure initialized');
-    
-    return panel;
+
+  // Assemble panel
+  panel.appendChild(header);
+  panel.appendChild(content);
+
+  // Append to body
+  document.body.appendChild(panel);
+
+  panelElement = panel;
+  console.log("✓ Filter Menu panel structure initialized");
+
+  return panel;
 }
 
 /**
  * Show the panel
  */
 export function showFilterPanel() {
-    if (panelElement) {
-        panelElement.classList.remove('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.remove("hidden");
+  }
 }
 
 /**
  * Hide the panel
  */
 export function hideFilterPanel() {
-    if (panelElement) {
-        panelElement.classList.add('hidden');
-    }
+  if (panelElement) {
+    panelElement.classList.add("hidden");
+  }
 }
 
 /**
  * Get panel element
  */
 export function getFilterPanel() {
-    return panelElement;
+  return panelElement;
 }
-

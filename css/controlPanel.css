@@ -5,382 +5,384 @@
 
 /* Control Panel Container */
 .control-panel {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 80px;
-    background: var(--bg-panel);
-    border-top: 1px solid var(--ui-border);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    z-index: var(--z-fixed);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 var(--space-6);
-    gap: var(--space-4);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-    animation: slideUp var(--duration-slow) var(--ease-out);
-    transition: transform var(--duration-base) var(--ease-in-out);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 80px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--ui-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: var(--z-fixed);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-6);
+  gap: var(--space-4);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  animation: slideUp var(--duration-slow) var(--ease-out);
+  transition: transform var(--duration-base) var(--ease-in-out);
 }
 
 .control-panel.minimized {
-    transform: translateY(calc(100% - 20px));
+  transform: translateY(calc(100% - 20px));
 }
 
 .control-panel.minimized:hover {
-    transform: translateY(calc(100% - 40px));
+  transform: translateY(calc(100% - 40px));
 }
 
 /* Control Panel Sections */
 .control-panel-left,
 .control-panel-center,
 .control-panel-right {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .control-panel-left {
-    flex: 1;
-    justify-content: flex-start;
+  flex: 1;
+  justify-content: flex-start;
 }
 
 .control-panel-center {
-    flex: 0 0 auto;
-    justify-content: center;
+  flex: 0 0 auto;
+  justify-content: center;
 }
 
 .control-panel-right {
-    flex: 1;
-    justify-content: flex-end;
+  flex: 1;
+  justify-content: flex-end;
 }
 
 /* Minimize/Maximize Toggle */
 .control-panel-toggle {
-    position: absolute;
-    top: -32px;
-    right: var(--space-6);
-    width: 32px;
-    height: 32px;
-    background: var(--bg-panel);
-    border: 1px solid var(--ui-border);
-    border-bottom: none;
-    border-radius: var(--radius-md) var(--radius-md) 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition-colors);
-    color: var(--text-secondary);
-    font-size: var(--font-size-lg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+  position: absolute;
+  top: -32px;
+  right: var(--space-6);
+  width: 32px;
+  height: 32px;
+  background: var(--bg-panel);
+  border: 1px solid var(--ui-border);
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-colors);
+  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .control-panel-toggle:hover {
-    background: var(--ui-hover);
-    color: var(--text-primary);
-    border-color: var(--ui-border-glow);
+  background: var(--ui-hover);
+  color: var(--text-primary);
+  border-color: var(--ui-border-glow);
 }
 
 .control-panel-toggle:active {
-    transform: scale(0.95);
+  transform: scale(0.95);
 }
 
 /* Base Button Styles */
 .control-btn {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-1);
-    width: 90px;
-    height: 64px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--ui-border);
-    border-radius: var(--radius-md);
-    color: var(--text-secondary);
-    font-family: var(--font-secondary);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    cursor: pointer;
-    transition: var(--transition-all);
-    padding: var(--space-2);
-    overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: 90px;
+  height: 64px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-all);
+  padding: var(--space-2);
+  overflow: hidden;
 }
 
 .control-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, var(--ui-hover), transparent);
-    opacity: 0;
-    transition: opacity var(--duration-base) var(--ease-in-out);
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--ui-hover), transparent);
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-in-out);
 }
 
 .control-btn:hover {
-    background: var(--ui-hover);
-    border-color: var(--ui-border-glow);
-    color: var(--text-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-glow);
+  background: var(--ui-hover);
+  border-color: var(--ui-border-glow);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
 }
 
 .control-btn:hover::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .control-btn:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-sm);
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .control-btn.active {
-    background: var(--ui-selection);
-    border-color: var(--accent-satellite);
-    color: var(--accent-satellite);
+  background: var(--ui-selection);
+  border-color: var(--accent-satellite);
+  color: var(--accent-satellite);
 }
 
 .control-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Button Icon */
 .control-btn img,
 .control-btn svg {
-    width: 24px;
-    height: 24px;
-    filter: brightness(0) saturate(100%) invert(72%) sepia(11%) saturate(653%) hue-rotate(173deg) brightness(93%) contrast(87%);
-    transition: filter var(--duration-base) var(--ease-in-out);
-    position: relative;
-    z-index: 1;
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) saturate(100%) invert(72%) sepia(11%) saturate(653%)
+    hue-rotate(173deg) brightness(93%) contrast(87%);
+  transition: filter var(--duration-base) var(--ease-in-out);
+  position: relative;
+  z-index: 1;
 }
 
 .control-btn:hover img,
 .control-btn:hover svg {
-    filter: brightness(0) saturate(100%) invert(95%) sepia(5%) saturate(1268%) hue-rotate(179deg) brightness(104%) contrast(97%);
+  filter: brightness(0) saturate(100%) invert(95%) sepia(5%) saturate(1268%)
+    hue-rotate(179deg) brightness(104%) contrast(97%);
 }
 
 .control-btn.active img,
 .control-btn.active svg {
-    filter: brightness(0) saturate(100%) invert(62%) sepia(97%) saturate(3582%) hue-rotate(166deg) brightness(102%) contrast(101%);
+  filter: brightness(0) saturate(100%) invert(62%) sepia(97%) saturate(3582%)
+    hue-rotate(166deg) brightness(102%) contrast(101%);
 }
 
 /* Button Text */
 .control-btn span {
-    position: relative;
-    z-index: 1;
-    white-space: normal;
-    text-overflow: unset;
-    overflow: visible;
-    max-width: 100%;
-    text-align: center;
-    font-size: var(--font-size-sm);
-    line-height: 1.2;
+  position: relative;
+  z-index: 1;
+  white-space: normal;
+  text-overflow: unset;
+  overflow: visible;
+  max-width: 100%;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  line-height: 1.2;
 }
 
 /* Button Badge (for notifications/counts) */
 .control-btn-badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    min-width: 18px;
-    height: 18px;
-    background: var(--accent-alert);
-    border: 2px solid var(--bg-panel);
-    border-radius: var(--radius-full);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: var(--font-weight-bold);
-    color: var(--text-primary);
-    padding: 0 4px;
-    z-index: 2;
-    animation: pulse 2s ease-in-out infinite;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  background: var(--accent-alert);
+  border: 2px solid var(--bg-panel);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  padding: 0 4px;
+  z-index: 2;
+  animation: pulse 2s ease-in-out infinite;
 }
 
 /* Button Variants */
 .control-btn-primary {
-    background: var(--accent-satellite);
-    border-color: var(--accent-satellite);
-    color: var(--bg-primary);
+  background: var(--accent-satellite);
+  border-color: var(--accent-satellite);
+  color: var(--bg-primary);
 }
 
 .control-btn-primary:hover {
-    background: var(--accent-orbit);
-    border-color: var(--accent-orbit);
+  background: var(--accent-orbit);
+  border-color: var(--accent-orbit);
 }
 
 .control-btn-secondary {
-    background: transparent;
-    border-color: var(--ui-border);
+  background: transparent;
+  border-color: var(--ui-border);
 }
 
 .control-btn-danger {
-    border-color: var(--accent-alert);
-    color: var(--accent-alert);
+  border-color: var(--accent-alert);
+  color: var(--accent-alert);
 }
 
 .control-btn-danger:hover {
-    background: rgba(255, 70, 86, 0.1);
-    border-color: var(--accent-alert);
+  background: rgba(255, 70, 86, 0.1);
+  border-color: var(--accent-alert);
 }
 
 /* Button Group */
 .control-btn-group {
-    display: flex;
-    gap: var(--space-2);
-    align-items: center;
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
 }
 
 .control-btn-group .control-btn {
-    border-radius: 0;
+  border-radius: 0;
 }
 
 .control-btn-group .control-btn:first-child {
-    border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .control-btn-group .control-btn:last-child {
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .control-btn-group .control-btn:not(:last-child) {
-    border-right: none;
+  border-right: none;
 }
 
 /* Divider */
 .control-divider {
-    width: 1px;
-    height: 48px;
-    background: var(--ui-border);
-    margin: 0 var(--space-2);
+  width: 1px;
+  height: 48px;
+  background: var(--ui-border);
+  margin: 0 var(--space-2);
 }
 
 /* Loading State */
 .control-btn.loading {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .control-btn.loading::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border: 2px solid var(--text-secondary);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--text-secondary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Tooltip */
 .control-btn[data-tooltip] {
-    position: relative;
+  position: relative;
 }
 
 .control-btn[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: var(--space-2) var(--space-3);
-    background: var(--bg-primary);
-    border: 1px solid var(--ui-border);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
-    font-size: var(--font-size-xs);
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--duration-base) var(--ease-in-out);
-    z-index: var(--z-tooltip);
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-primary);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-in-out);
+  z-index: var(--z-tooltip);
 }
 
 .control-btn[data-tooltip]:hover::after {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-    .control-panel {
-        height: 70px;
-        padding: 0 var(--space-4);
-    }
-    
-    .control-btn {
-        width: 56px;
-        height: 56px;
-    }
-    
-    .control-btn span {
-        font-size: 10px;
-    }
+  .control-panel {
+    height: 70px;
+    padding: 0 var(--space-4);
+  }
+
+  .control-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .control-btn span {
+    font-size: 10px;
+  }
 }
 
 @media (max-width: 768px) {
-    .control-panel {
-        height: 60px;
-        padding: 0 var(--space-3);
-        gap: var(--space-2);
-    }
-    
-    .control-btn {
-        width: 48px;
-        height: 48px;
-        gap: 0;
-    }
-    
-    .control-btn span {
-        display: none;
-    }
-    
-    .control-btn img,
-    .control-btn svg {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .control-panel-left,
-    .control-panel-center,
-    .control-panel-right {
-        gap: var(--space-2);
-    }
-    
-    .control-divider {
-        display: none;
-    }
+  .control-panel {
+    height: 60px;
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .control-btn {
+    width: 48px;
+    height: 48px;
+    gap: 0;
+  }
+
+  .control-btn span {
+    display: none;
+  }
+
+  .control-btn img,
+  .control-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .control-panel-left,
+  .control-panel-center,
+  .control-panel-right {
+    gap: var(--space-2);
+  }
+
+  .control-divider {
+    display: none;
+  }
 }
 
 /* High Contrast Mode */
 @media (prefers-contrast: high) {
-    .control-panel {
-        border-top-width: 2px;
-    }
-    
-    .control-btn {
-        border-width: 2px;
-    }
+  .control-panel {
+    border-top-width: 2px;
+  }
+
+  .control-btn {
+    border-width: 2px;
+  }
 }
 
 /* Dark Mode (already dark, but for completeness) */
 @media (prefers-color-scheme: dark) {
-    /* Already using dark theme */
+  /* Already using dark theme */
 }
-
