@@ -66,6 +66,8 @@ export function switchToVideoTexture(videoPath) {
         originalTexture = earth.material.map;
     }
     
+
+    
     // Create video element
     if (!videoElement) {
         videoElement = document.createElement('video');
@@ -75,7 +77,8 @@ export function switchToVideoTexture(videoPath) {
         videoElement.autoplay = true;
         videoElement.playsInline = true;
         videoElement.crossOrigin = 'anonymous';
-        
+            
+
         // Play video (required for autoplay in some browsers)
         videoElement.play().catch(err => {
             console.warn('[Earth] Video autoplay failed:', err);
@@ -90,12 +93,28 @@ export function switchToVideoTexture(videoPath) {
     // Create video texture
     if (!videoTexture) {
         videoTexture = new THREE.VideoTexture(videoElement);
+        // videoTexture.colorSpace = THREE.SRGBColorSpace;
+        // // Fix video orientation - flip Y if needed, adjust rotation
+        // videoTexture.flipY = true; // Usually videos need to be flipped
+        // // Center the video texture properly
+        // videoTexture.offset.set(0, 0);
+        // videoTexture.repeat.set(1, 1);
+        videoTexture.wrapS = THREE.ClampToEdgeWrapping;
+        videoTexture.wrapT = THREE.ClampToEdgeWrapping;
+
+        // Stretch vertically to cover poles
+        videoTexture.repeat.set(1, 1.35);   // increase if black still visible
+        videoTexture.offset.set(0, -0.175); // center it vertically
+
+        // Optional: horizontal flip (remove if not needed)
+        videoTexture.repeat.x = -1;
+        videoTexture.offset.x = 1;
+
+        // Quality
+        videoTexture.minFilter = THREE.LinearFilter;
+        videoTexture.magFilter = THREE.LinearFilter;
         videoTexture.colorSpace = THREE.SRGBColorSpace;
-        // Fix video orientation - flip Y if needed, adjust rotation
-        videoTexture.flipY = false; // Usually videos need to be flipped
-        // Center the video texture properly
-        videoTexture.offset.set(0, 0);
-        videoTexture.repeat.set(1, 1);
+
     }
     
     // Apply video texture to material
