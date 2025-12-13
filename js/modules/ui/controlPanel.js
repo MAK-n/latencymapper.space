@@ -300,6 +300,21 @@ export function initAllButtons() {
     );
     registerButton('list-stations', 'left', btnListStations);
     
+    // Attach Station List panel to List Stations button
+    btnListStations.disabled = true;
+    import('./stationList.js').then(mod => {
+        mod.initStationListPanel();
+        btnListStations.disabled = false;
+        btnListStations.addEventListener('click', () => {
+            const isHidden = mod.getStationListPanel()?.classList.contains('hidden');
+            if (isHidden) {
+                mod.showStationListPanel();
+            } else {
+                mod.hideStationListPanel();
+            }
+        });
+    });
+    
     // CENTER SECTION BUTTONS
     
     // 4. Search Button (Satellites & Ground Stations)
@@ -319,18 +334,9 @@ export function initAllButtons() {
         btnFindSatellite.addEventListener('click', mod.showSatelliteFinderPanel);
     });
     
-    // 5. Filters Button (with badge support)
-    const btnFilters = createControlButton(
-        'btn-filters',
-        'assets/icons/filter-icon.svg',
-        'Filters',
-        'Satellite Filters'
-    );
-    registerButton('filters', 'center', btnFilters);
-    
     // RIGHT SECTION BUTTONS
     
-    // 6. Settings Button
+    // 5. Settings Button
     const btnSettings = createControlButton(
         'btn-settings',
         'assets/icons/settings-icon.svg',
@@ -339,16 +345,22 @@ export function initAllButtons() {
     );
     registerButton('settings', 'right', btnSettings);
     
-    // 7. Graphics Button
-    const btnGraphics = createControlButton(
-        'btn-graphics',
-        'assets/icons/graphics-icon.svg',
-        'Graphics',
-        'Graphics & Quality Settings'
-    );
-    registerButton('graphics', 'right', btnGraphics);
+    // Attach Settings panel to Settings button
+    btnSettings.disabled = true;
+    import('./settings.js').then(mod => {
+        mod.initSettingsPanel();
+        btnSettings.disabled = false;
+        btnSettings.addEventListener('click', () => {
+            const isHidden = mod.getSettingsPanel()?.classList.contains('hidden');
+            if (isHidden) {
+                mod.showSettingsPanel();
+            } else {
+                mod.hideSettingsPanel();
+            }
+        });
+    });
     
-    // 8. Chaos Mode Button
+    // 6. Chaos Mode Button
     const btnChaosMode = createControlButton(
         'btn-chaos-mode',
         'assets/icons/search-icon.svg', // Using search icon as placeholder
@@ -374,19 +386,17 @@ export function initAllButtons() {
         });
     });
     
-    console.log('✓ All 8 control panel buttons initialized');
+    console.log('✓ All 6 control panel buttons initialized');
     console.log('  - Left section: Add Station, Add Satellite, List Stations');
-    console.log('  - Center section: Find Satellite, Filters');
-    console.log('  - Right section: Settings, Graphics, Chaos Mode');
+    console.log('  - Center section: Find Satellite');
+    console.log('  - Right section: Settings, Chaos Mode');
     
     return {
         addStation: btnAddStation,
         addSatellite: btnAddSatellite,
         listStations: btnListStations,
         findSatellite: btnFindSatellite,
-        filters: btnFilters,
-        settings: btnSettings,
-        graphics: btnGraphics
+        settings: btnSettings
     };
 }
 
