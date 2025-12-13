@@ -1,7 +1,10 @@
 import globals from "globals";
 import { defineConfig } from "eslint/config";
+import prettier from "eslint-plugin-prettier";
+import prettierConfig from "eslint-config-prettier";
 
 export default defineConfig([
+  // Global ignores
   {
     ignores: [
       "node_modules/**",
@@ -10,6 +13,8 @@ export default defineConfig([
       "coverage/**"
     ],
   },
+
+  // JS + Prettier rules
   {
     files: ["**/*.{js,mjs,cjs}"],
     languageOptions: {
@@ -17,10 +22,19 @@ export default defineConfig([
       sourceType: "module",
       globals: globals.browser,
     },
+    plugins: {
+      prettier,
+    },
     rules: {
-      "no-unused-vars": "off",   // 🔕 disable unused warnings
+      "no-unused-vars": "off",
+      "no-console": "off",
       "no-undef": "error",
-      "no-console": "off"
+
+      // Prettier as ESLint rule
+      "prettier/prettier": "warn"
     },
   },
+
+  // Disable ESLint formatting rules that conflict with Prettier
+  prettierConfig
 ]);
