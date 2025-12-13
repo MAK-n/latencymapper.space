@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { getSetting } from "./ui/uiState.js";
 // Listen for globe click mode activation from the UI/modal
 if (typeof window !== "undefined") {
   window.addEventListener("activate-globe-click-mode", () => {
@@ -226,8 +227,12 @@ export function displayStationInfo(stationData) {
   if (elevEl) elevEl.textContent = stationData.elevation + " m";
   if (typeEl) typeEl.textContent = stationData.type;
 
-  panel.classList.remove("hidden");
-  panel.style.display = "block";
+  // Show panel only if showInfo setting is enabled
+  const showInfo = getSetting('showInfo') ?? true;
+  if (showInfo) {
+    panel.classList.remove("hidden");
+    panel.style.display = "block";
+  }
 }
 
 /**

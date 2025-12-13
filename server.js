@@ -484,6 +484,83 @@ wss.on("connection", (clientWs) => {
 // ============================================
 
 /**
+ * Clear output directory
+ * DELETE /api/clear-output
+ * Deletes all files from the output/received_frames directory
+ */
+app.delete("/api/clear-output", (req, res) => {
+  console.log("[Server] ========================================");
+  console.log("[Server] Received request to clear output directory");
+  console.log("[Server] ========================================");
+
+  try {
+    const fs = require("fs");
+    const path = require("path");
+
+    const outputDir = path.join(__dirname, "output", "received_frames");
+
+    console.log("[Server] Output directory:", outputDir);
+
+    // Check if directory exists
+    if (!fs.existsSync(outputDir)) {
+      console.log("[Server] Output directory does not exist, nothing to clear");
+      return res.json({ success: true, message: "Output directory does not exist", deletedCount: 0 });
+    }
+
+    // Read all files in the directory
+    const files = fs.readdirSync(outputDir);
+    console.log(`[Server] Found ${files.length} files to delete`);
+
+    let deletedCount = 0;
+    let errors = [];
+
+    // Delete each file
+    files.forEach((file) => {
+      try {
+        const filePath = path.join(outputDir, file);
+        fs.unlinkSync(filePath);
+        deletedCount++;
+        console.log(`[Server] ✓ Deleted: ${file}`);
+      } catch (error) {
+        console.error(`[Server] Error deleting ${file}:`, error.message);
+        errors.push({ file, error: error.message });
+      }
+    });
+
+    console.log(`[Server] ========================================`);
+    console.log(`[Server] ✓ Cleared output directory`);
+    console.log(`[Server]   Deleted: ${deletedCount} files`);
+    if (errors.length > 0) {
+      console.log(`[Server]   Errors: ${errors.length}`);
+    }
+    console.log(`[Server] ========================================`);
+
+    if (errors.length > 0) {
+      res.status(207).json({
+        success: true,
+        message: `Deleted ${deletedCount} files with ${errors.length} errors`,
+        deletedCount,
+        errors,
+      });
+    } else {
+      res.json({
+        success: true,
+        message: `Successfully deleted ${deletedCount} files`,
+        deletedCount,
+      });
+    }
+  } catch (error) {
+    console.error("[Server] ========================================");
+    console.error("[Server] ERROR: Failed to clear output directory");
+    console.error("[Server] Error type:", error.constructor.name);
+    console.error("[Server] Error message:", error.message);
+    console.error("[Server] Error stack:", error.stack);
+    console.error("[Server] ========================================");
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * Stop heatmap client process
  * POST /api/stop-client
  */
@@ -535,6 +612,7 @@ server.listen(PORT, () => {
   console.log(`✓ Heatmap API endpoints:`);
   console.log(`  - POST /api/run-heatmap-client (spawns heatmap_client.py)`);
   console.log(`  - POST /api/stop-client (stops process)`);
+  console.log(`  - DELETE /api/clear-output (clears output directory)`);
   console.log(`  - POST /api/initialize (proxies to heatmap server)`);
   console.log(`  - POST /api/generate (proxies to heatmap server)`);
   console.log(`  - WebSocket /ws/frames (proxies to heatmap server)`);

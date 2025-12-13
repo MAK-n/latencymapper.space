@@ -659,13 +659,32 @@ export async function stopHeatmapGeneration() {
 /**
  * Clear heatmap
  */
-export function clearHeatmap() {
+export async function clearHeatmap() {
   // Stop animation first
   stopFrameAnimation();
 
   stopHeatmapGeneration();
   clearHeatmapOverlay();
   clearFrameCache();
+
+  // Delete files from output directory
+  try {
+    console.log("[HeatmapManager] Clearing output directory...");
+    const response = await fetch(`${API_BASE_URL}/clear-output`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`[HeatmapManager] ✓ Cleared output directory: ${data.deletedCount || 0} files deleted`);
+    } else {
+      const error = await response.json();
+      console.warn(`[HeatmapManager] Failed to clear output directory:`, error.error || response.statusText);
+    }
+  } catch (error) {
+    console.error("[HeatmapManager] Error clearing output directory:", error);
+    // Continue with clearing even if file deletion fails
+  }
 
   // Reset synchronization tracking
   framesReceivedSet.clear();

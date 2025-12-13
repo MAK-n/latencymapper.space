@@ -397,8 +397,8 @@ async function handleStop() {
 /**
  * Handle clear button click
  */
-function handleClear() {
-  clearHeatmap();
+async function handleClear() {
+  await clearHeatmap();
 
   // Hide clear button
   const clearBtn = document.getElementById("heatmap-clear-btn");

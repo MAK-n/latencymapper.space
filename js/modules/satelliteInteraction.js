@@ -5,6 +5,8 @@
 import * as THREE from "three";
 import { updateMousePosition } from "./coordinates.js";
 import { showOrbitPath, removeOrbitLine } from "./orbitalPath.js";
+import { shouldShowOrbitOnHover, shouldShowOrbitOnSelect } from "./ui/settingsPanel.js";
+import { getSetting } from "./ui/uiState.js";
 
 let selectedSatellite = null;
 let hoveredSatellite = null;
@@ -68,8 +70,10 @@ export function onSatelliteClick(
       selectedSatellite = clickedMesh;
       highlightSatellite(selectedSatellite);
 
-      // Show orbital path (brighter color for selected)
-      showOrbitPath(selectedSatellite, true);
+      // Show orbital path (brighter color for selected) - only if setting allows
+      if (shouldShowOrbitOnSelect()) {
+        showOrbitPath(selectedSatellite, true);
+      }
 
       // Display satellite info
       displaySatelliteInfo(selectedSatellite.userData);
@@ -92,8 +96,8 @@ export function onSatelliteHover(hoveredMesh) {
 
       hoveredSatellite = hoveredMesh;
 
-      // Show hover orbital path (only if not selected)
-      if (selectedSatellite !== hoveredSatellite) {
+      // Show hover orbital path (only if not selected and setting allows)
+      if (selectedSatellite !== hoveredSatellite && shouldShowOrbitOnHover()) {
         showOrbitPath(hoveredSatellite, false);
       }
     }
@@ -128,9 +132,12 @@ export function displaySatelliteInfo(satelliteData) {
   if (latEl) latEl.textContent = satelliteData.latitude.toFixed(4) + "°";
   if (lonEl) lonEl.textContent = satelliteData.longitude.toFixed(4) + "°";
 
-  // Show panel
-  panel.classList.remove("hidden");
-  panel.style.display = "block";
+  // Show panel only if showInfo setting is enabled
+  const showInfo = getSetting('showInfo') ?? true;
+  if (showInfo) {
+    panel.classList.remove("hidden");
+    panel.style.display = "block";
+  }
 }
 
 /**

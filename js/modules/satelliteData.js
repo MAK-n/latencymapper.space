@@ -6,6 +6,7 @@ import { CONFIG, URLS, COLORS } from "./constants.js";
 
 let satellites = [];
 let satelliteRecords = [];
+let allSatellites = []; // Store full list before limiting
 
 /**
  * Fetch TLE data from CelesTrak
@@ -89,7 +90,7 @@ function parseTLEText(tleText) {
 export async function loadSatelliteData() {
   try {
     const tleText = await fetchTLEData();
-    const allSatellites = parseTLEText(tleText);
+    allSatellites = parseTLEText(tleText);
 
     // Limit number of satellites for performance
     satellites = allSatellites.slice(0, CONFIG.MAX_SATELLITES);
@@ -102,6 +103,30 @@ export async function loadSatelliteData() {
     console.error("Error loading satellite data:", error);
     return [];
   }
+}
+
+/**
+ * Get all satellites (full list before limiting)
+ */
+export function getAllSatellites() {
+  return allSatellites;
+}
+
+/**
+ * Reload satellites with new limit
+ */
+export function reloadSatellitesWithLimit(newLimit) {
+  // Update the limit
+  CONFIG.MAX_SATELLITES = newLimit;
+  
+  // Re-slice the full list
+  satellites = allSatellites.slice(0, CONFIG.MAX_SATELLITES);
+  
+  console.log(
+    `✓ Reloaded ${satellites.length} satellites (limited from ${allSatellites.length} total)`,
+  );
+  
+  return satellites;
 }
 
 /**

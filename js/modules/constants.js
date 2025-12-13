@@ -13,6 +13,10 @@ export const CONFIG = {
   // Satellite update interval (milliseconds)
   SATELLITE_UPDATE_INTERVAL: 2000,
 
+  // Time acceleration factor (1.0 = normal speed, >1.0 = faster, <1.0 = slower)
+  // Lower update rate = faster movement along orbit
+  TIME_ACCELERATION: 1.0,
+
   // Interpolation
   INTERPOLATION_SPEED: 0.15,
 
@@ -20,7 +24,7 @@ export const CONFIG = {
   TLE_CACHE_DURATION: 3600000, // 1 hour
 
   // Satellite limits
-  MAX_SATELLITES: 5000,
+  MAX_SATELLITES: 50,
 
   // Orbit visualization
   ORBIT_SAMPLES: {

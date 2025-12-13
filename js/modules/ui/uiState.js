@@ -27,6 +27,7 @@ const uiState = {
     showStations: true,
     showInfo: true,
     updateRate: 2.0,
+    simulationSpeed: 1.0,
     maxSatellites: 50,
     throttling: true,
   },
@@ -246,6 +247,7 @@ export function resetState() {
     showStations: true,
     showInfo: true,
     updateRate: 2.0,
+    simulationSpeed: 1.0,
     maxSatellites: 50,
     throttling: true,
   };

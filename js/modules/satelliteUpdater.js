@@ -12,6 +12,7 @@ import {
 let lastSatelliteUpdate = 0;
 let satelliteTargetPositions = [];
 let satelliteCurrentPositions = [];
+let simulationStartTime = Date.now(); // Track simulation start for time acceleration
 
 /**
  * Initialize satellite records and propagate initial positions
@@ -73,19 +74,30 @@ export async function initializeSatellites(
   satelliteTargetPositions = targetPositions;
   satelliteCurrentPositions = currentPositions;
   lastSatelliteUpdate = Date.now();
+  simulationStartTime = Date.now(); // Reset simulation start time
 
   return { records, targetPositions, currentPositions };
 }
 
 /**
- * Propagate all satellites to current time
+ * Propagate all satellites to current time (with time acceleration)
  */
 export function propagateAllSatellites(satelliteRecords) {
-  const currentTime = new Date();
+  const realTime = new Date();
+  
+  // Calculate accelerated time: elapsed real time * acceleration factor
+  // Lower update rate = faster movement (higher acceleration)
+  const elapsedRealTime = realTime.getTime() - simulationStartTime;
+  const acceleratedElapsedTime = elapsedRealTime * CONFIG.TIME_ACCELERATION;
+  
+  // Create accelerated time for propagation (start time + accelerated elapsed time)
+  const acceleratedTime = new Date(simulationStartTime + acceleratedElapsedTime);
+  
   let updateCount = 0;
 
   satelliteRecords.forEach((satRecord, index) => {
-    const position = propagateSatellitePosition(satRecord, currentTime);
+    // Use accelerated time for propagation
+    const position = propagateSatellitePosition(satRecord, acceleratedTime);
 
     if (position) {
       satelliteTargetPositions[index] = position;
@@ -206,9 +218,18 @@ export function addSatellitePosition(position) {
 }
 
 /**
+ * Reset simulation start time (called when acceleration changes)
+ */
+export function resetSimulationTime() {
+  simulationStartTime = Date.now();
+  console.log('[SatelliteUpdater] Simulation time reset');
+}
+
+/**
  * Expose functions to window for debugging
  */
 if (typeof window !== "undefined") {
   window.getSatelliteTargetPositions = getSatelliteTargetPositions;
   window.getSatelliteCurrentPositions = getSatelliteCurrentPositions;
+  window.resetSimulationTime = resetSimulationTime;
 }
