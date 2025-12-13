@@ -1,6 +1,16 @@
 const API_BASE = "https://knox-swainish-wonderingly.ngrok-free.dev";
 
 // ---------------------------
+// FORCE INDEX PAGE AS ENTRY
+// ---------------------------
+if (window.location.pathname.endsWith("index.html")) {
+    // Clear any previous session when landing page loads
+    localStorage.clear();
+    sessionStorage.clear();
+}
+
+
+// ---------------------------
 // SIMPLE ROUTE HELPERS
 // ---------------------------
 function go(url) {
