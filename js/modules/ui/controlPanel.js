@@ -302,14 +302,22 @@ export function initAllButtons() {
     
     // CENTER SECTION BUTTONS
     
-    // 4. Find Satellite Button
+    // 4. Search Button (Satellites & Ground Stations)
     const btnFindSatellite = createControlButton(
         'btn-find-satellite',
         'assets/icons/search-icon.svg',
-        'Find',
-        'Search for Satellite'
+        'Search',
+        'Search Satellites & Ground Stations'
     );
     registerButton('find-satellite', 'center', btnFindSatellite);
+    
+    // Attach Search panel to Search button
+    btnFindSatellite.disabled = true;
+    import('./satelliteFinder.js').then(mod => {
+        mod.initSatelliteFinderPanel();
+        btnFindSatellite.disabled = false;
+        btnFindSatellite.addEventListener('click', mod.showSatelliteFinderPanel);
+    });
     
     // 5. Filters Button (with badge support)
     const btnFilters = createControlButton(

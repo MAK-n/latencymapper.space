@@ -201,7 +201,7 @@ function resetSelection() {
 /**
  * Display Info Panel
  */
-function displayStationInfo(stationData) {
+export function displayStationInfo(stationData) {
     const panel = document.getElementById('station-info');
     if (!panel) return;
 

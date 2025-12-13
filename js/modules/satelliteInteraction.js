@@ -103,7 +103,7 @@ export function onSatelliteHover(hoveredMesh) {
 /**
  * Display satellite information panel
  */
-function displaySatelliteInfo(satelliteData) {
+export function displaySatelliteInfo(satelliteData) {
     const panel = document.getElementById('satellite-info');
     if (!panel) return;
     
