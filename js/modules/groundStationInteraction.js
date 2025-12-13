@@ -72,6 +72,7 @@ export function activateGlobeClickMode(globe, camera, renderer) {
 
 import { COLORS } from './constants.js';
 import { updateMousePosition } from './coordinates.js';
+import { getStationMeshes } from './groundStationRenderer.js';
 
 let selectedStation = null;
 let mouseDownPos = { x: 0, y: 0 };
@@ -253,12 +254,14 @@ export function setupStationInteraction(
     renderer.domElement.addEventListener('mousedown', onMouseDown);
 
     renderer.domElement.addEventListener('click', (event) => {
+        // Get fresh station meshes array to include newly added stations
+        const currentStationMeshes = getStationMeshes();
         onStationClick(
             event,
             mouse,
             raycaster,
             camera,
-            stationMeshes,
+            currentStationMeshes,
             satelliteMeshes,
             onSatelliteClick
         );
@@ -267,12 +270,14 @@ export function setupStationInteraction(
     // Hover handler (using your unified function)
     if (onCombinedHover && onSatelliteHover) {
         renderer.domElement.addEventListener('mousemove', (event) => {
+            // Get fresh station meshes array to include newly added stations
+            const currentStationMeshes = getStationMeshes();
             onCombinedHover(
                 event,
                 mouse,
                 raycaster,
                 camera,
-                stationMeshes,
+                currentStationMeshes,
                 satelliteMeshes,
                 renderer,
                 onSatelliteHover,

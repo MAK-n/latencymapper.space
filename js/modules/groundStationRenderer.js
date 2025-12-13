@@ -47,6 +47,13 @@ export function renderGroundStations(scene, groundStations) {
     let renderedCount = 0;
 
     groundStations.forEach(station => {
+        // Check if mesh for this station already exists
+        const existingMesh = stationMeshes.find(mesh => mesh.userData.stationId === station.id);
+        if (existingMesh) {
+            console.log(`Station ${station.id} already rendered, skipping`);
+            return;
+        }
+
         // Distinct color for new stations (id pattern: 'gs_' + timestamp)
         let material;
         if (typeof station.id === 'string' && /^gs_\d{13,}$/.test(station.id)) {

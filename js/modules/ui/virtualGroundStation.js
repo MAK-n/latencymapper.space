@@ -2,7 +2,8 @@
 // VIRTUAL GROUND STATION - Creation UI & Logic
 // Modal for creating custom ground stations
 // ============================================
-
+import { renderGroundStations } from "../groundStationRenderer.js";
+import { addGroundStation } from "../groundStations.js";
 let modalElement = null;
 
 /**
@@ -181,10 +182,14 @@ export function initAddStationModal() {
 
             try {
                 window.dispatchEvent(new CustomEvent('add-ground-station', { detail: newStation }));
+                
+                addGroundStation(newStation);
+                renderGroundStations(window.TREE, [newStation]);
+
                 // Close modal
                 backdrop.classList.add('hidden');
                 form.reset();
-                alert('Ground station added!');
+                console.log('Ground station added!');
             } catch (err) {
                 alert('Failed to add ground station: ' + err.message);
             }

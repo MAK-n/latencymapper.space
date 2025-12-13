@@ -56,6 +56,9 @@ async function init() {
     camera = sceneObjects.camera;
     renderer = sceneObjects.renderer;
     
+    // Set window.TREE for UI modules that need scene reference
+    window.TREE = scene;
+    
     // Initialize mouse and raycaster for interaction
     mouse = new THREE.Vector2();
     raycaster = new THREE.Raycaster();

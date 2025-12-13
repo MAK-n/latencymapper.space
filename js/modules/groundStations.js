@@ -1,3 +1,15 @@
+/**
+ * Add a ground station to the session array
+ */
+export function addGroundStation(station) {
+    // Prevent duplicates by id
+    if (!groundStations.find(s => s.id === station.id)) {
+        groundStations.push(station);
+        console.log('✓ Added ground station to session:', station);
+    } else {
+        console.warn('Station with this id already exists:', station.id);
+    }
+}
 // ============================================
 // GROUND STATION DATA MANAGEMENT
 // ============================================
