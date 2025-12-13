@@ -2,11 +2,12 @@
 // CHAOS MODE - Fast Buttons + DVD Screensaver
 // ============================================
 
-import { getEarth, switchToVideoTexture, restoreOriginalTexture } from './earth.js';
-import { getStationMeshes } from './groundStationRenderer.js';
-import { getSatelliteMeshes } from './satelliteRenderer.js';
-import { calculateOrbitPath, createOrbitLine } from './orbitalPath.js';
-import { getSatelliteRecords } from './satelliteData.js';
+import * as THREE from "three";
+import { getEarth, switchToVideoTexture, restoreOriginalTexture } from "./earth.js";
+import { getStationMeshes } from "./groundStationRenderer.js";
+import { getSatelliteMeshes } from "./satelliteRenderer.js";
+import { calculateOrbitPath, createOrbitLine } from "./orbitalPath.js";
+import { getSatelliteRecords } from "./satelliteData.js";
 
 // ------------------------------------------------
 // STATE
@@ -14,6 +15,7 @@ import { getSatelliteRecords } from './satelliteData.js';
 let isChaosModeActive = false;
 let animationFrameId = null;
 let lastTeleportTime = 0;
+let chaosStartTime = 0;
 const TELEPORT_INTERVAL = 2000;
 
 // ------------------------------------------------
@@ -24,6 +26,9 @@ let buttonsCaptured = false;
 
 const originalSatellitePositions = new Map();
 const originalStationRotations = new Map();
+
+const originalCameraPosition = new THREE.Vector3();
+const originalEarthRotation = new THREE.Euler();
 
 const chaosOrbitLines = [];
 const satelliteOrbitPaths = new Map();
